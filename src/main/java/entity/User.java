@@ -6,11 +6,13 @@ import main.java.dao.DBHelper;
  * Created by devilpi on 06/01/2018.
  */
 public class User {
+
+    enum TYPE {EMPLOYEE,HR,MANAGER,ADMIN};
     protected int employeeId;
     protected int age;
     protected String password;
     protected String name;
-    protected int type;
+    protected TYPE type;
 
     public User() {}
 
