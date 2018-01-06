@@ -1,6 +1,9 @@
 package main.java.entity;
 
 import main.java.dao.DBHelper;
+import main.java.dao.DBUtils;
+
+import java.sql.ResultSet;
 
 /**
  * Created by devilpi on 06/01/2018.
@@ -48,16 +51,24 @@ public class User {
         this.name = name;
     }
 
-    public int getType() {
+    public TYPE getType() {
         return type;
     }
 
     public void setType(int type) {
-        this.type = type;
+        this.type = TYPE.values()[type];
     }
 
-    public boolean login(int employeeId, String password) {
-        String sql = "INSERT INTO ";
-        return false;
+    public boolean login(int employeeId, String password) throws Exception {
+        String sql = String.format("SELECT * FROM user WHERE employee_id=%d and password=`%s`", employeeId, password);
+        ResultSet resultSet = DBUtils.executeSql(sql);
+        while(resultSet.next()) {
+            setName(resultSet.getString("name"));
+            setAge(resultSet.getInt("age"));
+            setType(resultSet.getInt("type"));
+            setPassword(resultSet.getString("password"));
+            setEmployeeId(resultSet.getInt("employee_id"));
+        }
+        return getName() != null;
     }
 }
