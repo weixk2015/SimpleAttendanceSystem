@@ -10,6 +10,7 @@ public class Employee extends User {
         this.employeeId = user.employeeId;
         this.name = user.name;
         this.password = user.password;
-        this.type =
+        this.type = TYPE.EMPLOYEE;
+        
     }
 }
