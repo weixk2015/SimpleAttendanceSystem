@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ibatis-common-21">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../ibatis-common-2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

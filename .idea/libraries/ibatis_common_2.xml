@@ -1,8 +1,6 @@
 <component name="libraryTable">
   <library name="ibatis-common-2">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/Downloads/ibatis-common-2.jar!/" />
-    </CLASSES>
+    <CLASSES />
     <JAVADOC />
     <SOURCES />
   </library>
