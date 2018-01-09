@@ -2,6 +2,7 @@ package main.java.entity;
 
 import main.java.dao.DBHelper;
 import main.java.dao.DBUtils;
+import java.util.date;
 
 import java.sql.ResultSet;
 
@@ -62,6 +63,7 @@ public class User {
     public boolean login(int employeeId, String password) throws Exception {
         String sql = String.format("SELECT * FROM user WHERE employee_id=%d and password='%s'", employeeId, password);
         ResultSet resultSet = DBUtils.executeSql(sql);
+        if(resultSet.getRow() != 1) return false;
         while(resultSet.next()) {
             setName(resultSet.getString("name"));
             setAge(resultSet.getInt("age"));
@@ -69,6 +71,11 @@ public class User {
             setPassword(resultSet.getString("password"));
             setEmployeeId(resultSet.getInt("employee_id"));
         }
-        return getName() != null;
+        return true;
     }
+
+    public void log(String operate) throws Exception {
+        DateTime.now
+    }
+
 }
