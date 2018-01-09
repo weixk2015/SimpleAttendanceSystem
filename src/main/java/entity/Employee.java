@@ -30,14 +30,34 @@ public class Employee extends User {
         else
             throw new SQLException();
     }
-    boolean signIn(){
+    boolean checkIn(){
         SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD");
         SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm:ss");
         Date date = new Date();
         String sql = String.format("INSERT INTO attendance (employee_id, date, sign_in_time) " +
                 "VALUES (%d, \'%s\', \'%s\')",employeeId,sdf.format(date),sdf1.format(date));
-        System.out.println(sql);
+        //System.out.println(sql);
         DBUtils.executeUpdate(sql);
+        return true;
+    }
+    boolean checkOff() throws SQLException {
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD");
+        SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm:ss");
+        Date date = new Date();
+        String sql = String.format("SELECT * FROM attendance  " +
+                "WHERE employee_id = %d AND date = \'%s\'",employeeId,sdf.format(date));
+        System.out.println(sql);
+        ResultSet resultSet = DBUtils.executeSql(sql);
+        String sql1;
+        if (!resultSet.next()){
+            sql1 = String.format("INSERT INTO attendance (employee_id, date, sign_off_time) " +
+                    "VALUES (%d, \'%s\', \'%s\')",employeeId,sdf.format(date),sdf1.format(date));
+        }else {
+            sql1 =  String.format("UPDATE attendance SET sign_off_time = " +
+                    "\'%s\' WHERE employee_id = %d AND date = \'%s\'",sdf1.format(date),employeeId,sdf.format(date));
+        }
+        System.out.println(sql1);
+        DBUtils.executeUpdate(sql1);
         return true;
     }
 }

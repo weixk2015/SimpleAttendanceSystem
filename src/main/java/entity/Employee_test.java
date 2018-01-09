@@ -8,6 +8,7 @@ public class Employee_test {
     public static void main(String[] args) throws SQLException {
         Employee employee = new Employee(new User());
         employee.employeeId = 0;
-        employee.signIn();
+//        employee.checkIn();
+        employee.checkOff();
     }
 }
