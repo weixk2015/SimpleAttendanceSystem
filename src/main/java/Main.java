@@ -193,7 +193,15 @@ public class Main {
     public static void addDepartment() {
         System.out.println("Please input department_name: ");
         String departmentName = sc.nextLine();
-        System.out.println("Please input ");
+        System.out.println("Please input manager_id: ");
+        int managerId = Integer.parseInt(sc.nextLine());
+        try {
+            ((Manager)user).addDepartment(departmentName, managerId);
+            ((Manager)user).modifyUserType(2, managerId);
+            System.out.println("modify success!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
