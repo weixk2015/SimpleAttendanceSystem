@@ -2,7 +2,10 @@ package main.java.entity;
 
 import main.java.dao.DBHelper;
 import main.java.dao.DBUtils;
-import java.util.date;
+import java.util.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 import java.sql.ResultSet;
 
@@ -61,21 +64,30 @@ public class User {
     }
 
     public boolean login(int employeeId, String password) throws Exception {
-        String sql = String.format("SELECT * FROM user WHERE employee_id=%d and password='%s'", employeeId, password);
+        String sql = String.format("SELECT * FROM user WHERE employee_id=%d and password=\'%s\'", employeeId, password);
         ResultSet resultSet = DBUtils.executeSql(sql);
-        if(resultSet.getRow() != 1) return false;
-        while(resultSet.next()) {
-            setName(resultSet.getString("name"));
-            setAge(resultSet.getInt("age"));
-            setType(resultSet.getInt("type"));
-            setPassword(resultSet.getString("password"));
-            setEmployeeId(resultSet.getInt("employee_id"));
-        }
-        return true;
+        boolean ret = resultSet.next();
+
+        setName(resultSet.getString("name"));
+        setAge(resultSet.getInt("age"));
+        setType(resultSet.getInt("type"));
+        setPassword(resultSet.getString("password"));
+        setEmployeeId(resultSet.getInt("employee_id"));
+
+        return ret;
     }
 
-    public void log(String operate) throws Exception {
-        DateTime.now
+    public void log(String operate, String description) throws Exception {
+        long curTime = new Date().getTime();
+        Timestamp timestamp = new Timestamp(curTime);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String sql = String.format("INSERT INTO log (employee_id, time, action, description) " +
+                "VALUES (%d, \'%s\', \'%s\', \'%s\')", employeeId, sdf.format(timestamp), operate, description);
+        DBUtils.executeUpdate(sql);
     }
 
+    public void modify(int age, String password, String name) throws Exception {
+        String sql = String.format("UPDATE user SET age=%d, password=\'%s\', name=\'%s\' WHERE employee_id=%d", age, password, name, employeeId);
+        DBUtils.executeUpdate(sql);
+    }
 }
