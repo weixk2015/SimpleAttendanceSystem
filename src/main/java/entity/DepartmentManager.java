@@ -11,7 +11,10 @@ import java.sql.SQLException;
 public class DepartmentManager extends Manager {
     public enum Status{waiting, permited, rejected};
     void checkApply() throws Exception {
-        String sql = "SELECT * FROM leave_info WHERE status = 0";
+        String sql = String.format("SELECT leave_info.apply_id,leave_info.begin, leave_info.end, leave_info.employee_id," +
+                "leave_info.leave_type, leave_info.reason FROM leave_info,employee,department" +
+                " WHERE employee.department_id = department.department_id AND department.manager_id = %d" +
+                "AND leave_info.status = 0 AND employee.employee_id = leave_info.employee_id ",employeeId);
         ResultSet resultSet = DBUtils.executeSql(sql);
         System.out.println("-------------leave_info--------------");
         System.out.println("apply_id       begin       end        employee_id      leave_type       reason");
@@ -19,7 +22,10 @@ public class DepartmentManager extends Manager {
             dumpLeaveInfo(resultSet);
         }
         System.out.println("--------------trip_info---------------");
-        String sql1 = "SELECT * FROM trip WHERE status = 0";
+        String sql1 = String.format("SELECT trip.apply_id,trip.begin, trip.end, trip.employee_id," +
+                "trip.trip_type, trip.business FROM trip,employee,department" +
+                " WHERE employee.department_id = department.department_id AND department.manager_id = %d" +
+                "AND trip.status = 0 AND employee.employee_id = trip.employee_id ",employeeId);
         System.out.println("apply_id       begin       end        employee_id      trip_type       business");
         ResultSet resultSet1 = DBUtils.executeSql(sql1);
         while(resultSet1.next()) {

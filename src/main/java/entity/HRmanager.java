@@ -62,14 +62,5 @@ public class HRmanager extends Manager {
             dumpDepartment(resultSet);
         }
     }
-    public void dumpDepartment(ResultSet resultSet) throws Exception {
-        int id= resultSet.getInt("manager_id");
-        String sql = String.format("SELECT name FROM user WHERE employee_id = %d",id);
-        String name = "";
-        ResultSet resultSet1 = DBUtils.executeSql(sql);
-        if (resultSet1.next())
-            name = resultSet1.getString("name");
-        System.out.printf("%-8d %-10s %-15s \n", resultSet.getInt("department_id"),
-                resultSet.getString("department_name"),name );
-    }
+
 }
