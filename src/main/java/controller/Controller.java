@@ -10,10 +10,22 @@ public class Controller {
     public void login(int employeeId, String password) {
         User tmp = new User();
         try {
-            tmp.login(employeeId, password);
+            boolean flag = tmp.login(employeeId, password);
+            if(flag) {
+                System.out.println("true");
+            }
+            else System.out.println("false");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void dumpUser(User user) {
+        System.out.println(user.getEmployeeId());
+        System.out.println(user.getAge());
+        System.out.println(user.getName());
+        System.out.println(user.getPassword());
+        System.out.println(user.getType());
     }
 
     public void logout() {
