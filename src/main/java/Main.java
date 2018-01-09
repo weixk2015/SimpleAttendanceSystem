@@ -19,7 +19,7 @@ public class Main {
     public static void control() {
         System.out.print(info0);
         Scanner sc = new Scanner(System.in);
-        int employeeId = sc.nextInt();
+        int employeeId = Integer.parseInt(sc.nextLine());
         System.out.print(info1);
         String password = sc.nextLine();
         controller.login(employeeId, password);
