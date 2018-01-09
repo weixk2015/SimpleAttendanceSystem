@@ -1,6 +1,7 @@
 package main.java;
 
 import main.java.controller.Controller;
+import main.java.entity.SystemManager;
 
 import java.util.Scanner;
 
@@ -13,7 +14,7 @@ public class Main {
     static Controller controller = new Controller();
 
     public static void main(String[] args) {
-        control();
+        test();
     }
 
     public static void control() {
@@ -23,5 +24,14 @@ public class Main {
         System.out.print(info1);
         String password = sc.nextLine();
         controller.login(employeeId, password);
+    }
+
+    public static void test() {
+        SystemManager systemManager = new SystemManager();
+        try {
+            systemManager.showLog("2018-01-09 15:45:00", "2018-01-09 15:45:59");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

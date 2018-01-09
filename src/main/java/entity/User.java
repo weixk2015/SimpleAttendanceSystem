@@ -77,13 +77,17 @@ public class User {
         return ret;
     }
 
-    public void log(String operate, String description) throws Exception {
+    public void log(String operate, String description) {
         long curTime = new Date().getTime();
         Timestamp timestamp = new Timestamp(curTime);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         String sql = String.format("INSERT INTO log (employee_id, time, action, description) " +
                 "VALUES (%d, \'%s\', \'%s\', \'%s\')", employeeId, sdf.format(timestamp), operate, description);
-        DBUtils.executeUpdate(sql);
+        try {
+            DBUtils.executeUpdate(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void modify(int age, String password, String name) throws Exception {
