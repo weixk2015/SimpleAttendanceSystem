@@ -68,11 +68,13 @@ public class User {
         ResultSet resultSet = DBUtils.executeSql(sql);
         boolean ret = resultSet.next();
 
-        setName(resultSet.getString("name"));
-        setAge(resultSet.getInt("age"));
-        setType(resultSet.getInt("type"));
-        setPassword(resultSet.getString("password"));
-        setEmployeeId(resultSet.getInt("employee_id"));
+        if(ret) {
+            setName(resultSet.getString("name"));
+            setAge(resultSet.getInt("age"));
+            setType(resultSet.getInt("type"));
+            setPassword(resultSet.getString("password"));
+            setEmployeeId(resultSet.getInt("employee_id"));
+        }
 
         return ret;
     }

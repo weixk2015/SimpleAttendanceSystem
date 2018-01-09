@@ -18,8 +18,11 @@ public class Main {
     static Controller controller = new Controller();
     static User user = null;
 
+    static Scanner sc;
+
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+        System.out.println("\nwelcome to simple attendance system v1.0\n");
+        sc = new Scanner(System.in);
         while(true) {
             System.out.print("Please input what you want to do: ");
             String act = sc.nextLine();
@@ -47,9 +50,8 @@ public class Main {
             return;
         }
 
-        System.out.print("\n" +
-                "welcome to simple attendance system v1.0\n" +
-                "Please input your username: ");
+        System.out.print(
+                "Please input your employee_id: ");
         Scanner sc = new Scanner(System.in);
         int employeeId = Integer.parseInt(sc.nextLine());
         System.out.print("Please input your password: ");
@@ -80,17 +82,44 @@ public class Main {
             e.printStackTrace();
         }
 
-
-
     }
 
     public static void logout() {
-        if(user == null) {
-            System.out.println("You have not log in!");
-            return;
-        }
+        if(!checkLogin()) return;
         user = null;
     }
 
+    public static void modify() {
+        if(!checkLogin()) return;
+        if(user instanceof Employee) modifyEmployee();
+        else modifyManager();
+    }
+
+    public static void modifyEmployee() {
+        System.out.print("Please input your new password: ");
+        String password = sc.nextLine();
+        System.out.print("Please input your new name: ");
+        String name = sc.nextLine();
+        System.out.print("Please input your new age: ");
+        int age = Integer.parseInt(sc.nextLine());
+        try {
+            user.modify(age, password, name);
+            System.out.println("modify success!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void modifyManager() {
+
+    }
+
+    public static boolean checkLogin() {
+        if(user == null) {
+            System.out.println("You have not log in!");
+            return false;
+        }
+        return true;
+    }
 
 }
