@@ -25,12 +25,19 @@ public class Employee extends User {
 
         String sql =  String.format( "SELECT department_id FROM employee WHERE employee_id = %d",employeeId);
         ResultSet resultSet = DBUtils.executeSql(sql);
-        return resultSet.getInt(0);
+        if (resultSet.next())
+            return resultSet.getInt(1);
+        else
+            throw new SQLException();
     }
     boolean signIn(){
-        Timestamp timestamp = new Timestamp(new Date().getTime());
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD");
+        SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm:ss");
+        Date date = new Date();
         String sql = String.format("INSERT INTO attendance (employee_id, date, sign_in_time) " +
-                "VALUES (%d, %s, %s)",employeeId,timestamp,timestamp);
+                "VALUES (%d, \'%s\', \'%s\')",employeeId,sdf.format(date),sdf1.format(date));
+        System.out.println(sql);
+        DBUtils.executeUpdate(sql);
         return true;
     }
 }
