@@ -5,6 +5,7 @@ package main.java.dao;
  */
 
 import com.ibatis.common.resources.Resources;
+import com.mysql.jdbc.Driver;
 
 import java.sql.*;
 import java.util.Properties;
@@ -13,7 +14,7 @@ public class DBHelper {
 
     public DBHelper() {
         try {
-            Properties props = Resources.getResourceAsProperties("src/java/dao/jdbc.properties");
+            Properties props = Resources.getResourceAsProperties("jdbc.properties");
             String url = props.getProperty("url");
             String driver = props.getProperty("driver");
             String username = props.getProperty("username");
@@ -27,7 +28,7 @@ public class DBHelper {
 
     public DBHelper(String dataBaseName) {
         try {
-            Properties props = Resources.getResourceAsProperties("jdbc.properties");
+            Properties props = Resources.getResourceAsProperties("main/java/dao/jdbc.properties");
             String url = props.getProperty("url") + dataBaseName;
             String driver = props.getProperty("driver");
             String username = props.getProperty("username");

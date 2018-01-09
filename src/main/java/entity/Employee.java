@@ -27,8 +27,8 @@ public class Employee extends User {
     }
     boolean signIn(){
         SimpleDateFormat format = new SimpleDateFormat("");
-        String sql = String.format("INSERT INTO attendance (employee_id, date, sign_in_time) " +
-                "VALUES (%d, %s, %s)",employeeId,);
+        //String sql = String.format("INSERT INTO attendance (employee_id, date, sign_in_time) " +
+         //       "VALUES (%d, %s, %s)",employeeId,);
         return true;
     }
 }
