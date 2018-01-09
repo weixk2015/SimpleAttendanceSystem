@@ -42,7 +42,7 @@ public class Employee extends User {
                 throw new NoSuchUserException();
 
     }
-    boolean checkIn() throws DuplicateException {
+    public boolean checkIn() throws DuplicateException {
         log("checkin","");
         SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD");
         SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm:ss");
@@ -57,7 +57,7 @@ public class Employee extends User {
         }
         return true;
     }
-    boolean checkOff() throws SQLException {
+    public boolean checkOff() throws SQLException {
         log("checkout","");
         SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD");
         SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm:ss");
@@ -87,7 +87,7 @@ public class Employee extends User {
         }
         return true;
     }
-    int askLeave(String begin, String end, int type, String reason){
+    public int askLeave(String begin, String end, int type, String reason){
         log("submit_leave","");
         String sql = String.format("INSERT INTO leave_info ( begin, end, leave_type, reason, employee_id) " +
                 "VALUES (\'%s\', \'%s\', %d, \'%s\', %d)", begin, end, type, reason, employeeId);
@@ -102,7 +102,7 @@ public class Employee extends User {
         return -1;
 
     }
-    int askTrip(String begin, String end, int type, String business){
+    public int askTrip(String begin, String end, int type, String business){
         log("submit_trip","");
         String sql = String.format("INSERT INTO trip ( begin, end, trip_type, business, employee_id) " +
                 "VALUES (\'%s\', \'%s\', %d, \'%s\', %d)", begin, end, type, business, employeeId);

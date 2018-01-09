@@ -11,26 +11,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Manager extends User {
-    int addUser(int age, String name, String password,int type) throws Exception {
+    public int addUser(int age, String name, String password,int type) throws Exception {
         if (this.type==TYPE.MANAGER)
             throw new PermisionDeniedException();
         String sql = String.format("INSERT INTO user (age, name, password, type) " +
                 "VALUES (%d, \'%s\', \'%s\', %d)",age, name, password, type);
         return DBUtils.executeIncInsert(sql);
     }
-    void deleteUser(int employee_id) throws Exception {
+    public void deleteUser(int employee_id) throws Exception {
         if (this.type==TYPE.MANAGER)
             throw new PermisionDeniedException();
         String sql = String.format("DELETE FROM user WHERE employee_id = %d",employee_id);
         DBUtils.executeUpdate(sql);
     }
-    void deleteEmployee(int employee_id) throws Exception {
+    public void deleteEmployee(int employee_id) throws Exception {
         if (this.type==TYPE.MANAGER)
             throw new PermisionDeniedException();
         String sql = String.format("DELETE FROM employee WHERE employee_id = %d",employee_id);
         DBUtils.executeUpdate(sql);
     }
-    boolean addEmployee(int ID,int departmentID) throws SQLException, NoSuchUserException, DuplicateException, PermisionDeniedException {
+    public boolean addEmployee(int ID,int departmentID) throws SQLException, NoSuchUserException, DuplicateException, PermisionDeniedException {
         if (this.type==TYPE.MANAGER)
             throw new PermisionDeniedException();
         String sql =  String.format( "SELECT * FROM user WHERE employee_id = %d",ID);

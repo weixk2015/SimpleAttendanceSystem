@@ -10,7 +10,7 @@ import java.sql.SQLException;
  */
 public class DepartmentManager extends Manager {
     public enum Status{waiting, permited, rejected};
-    void checkApply() throws Exception {
+    public void checkApply() throws Exception {
         String sql = String.format("SELECT leave_info.apply_id,leave_info.begin, leave_info.end, leave_info.employee_id," +
                 "leave_info.leave_type, leave_info.reason FROM leave_info,employee,department" +
                 " WHERE employee.department_id = department.department_id AND department.manager_id = %d" +

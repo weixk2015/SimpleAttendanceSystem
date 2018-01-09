@@ -12,7 +12,7 @@ import java.sql.SQLException;
  */
 public class HRmanager extends Manager {
 
-    int addDepartment(String departmentName, int managerID) throws SQLException, NoSuchUserException {
+    public int addDepartment(String departmentName, int managerID) throws SQLException, NoSuchUserException {
         String sql =  String.format( "SELECT * FROM user WHERE employee_id = %d",managerID);
         System.out.println(sql);
         ResultSet resultSet = null;
@@ -32,7 +32,7 @@ public class HRmanager extends Manager {
         }
 
     }
-    boolean modifyDepartment(int departmentID, String departmentName, int managerID) throws SQLException, NoSuchUserException {
+    public boolean modifyDepartment(int departmentID, String departmentName, int managerID) throws SQLException, NoSuchUserException {
         String sql =  String.format( "SELECT * FROM user WHERE employee_id = %d",managerID);
         System.out.println(sql);
         ResultSet resultSet = null;
