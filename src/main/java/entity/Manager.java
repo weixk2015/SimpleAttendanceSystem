@@ -72,6 +72,15 @@ public class Manager extends User {
         }
         return true;
     }
+    public boolean modifyUserType(int type, int ID) {
+        String sql1 = String.format("UPDATE user SET type=%d WHERE employee_id=%d", type, ID);
+        try {
+            DBUtils.executeUpdate(sql1);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
     public void modifyEmployee(int ID, int departmentID) throws Exception {
         String sql = String.format("UPDATE employee SET department_id = %d WHERE employee_id=%d", departmentID, ID);
         DBUtils.executeUpdate(sql);
