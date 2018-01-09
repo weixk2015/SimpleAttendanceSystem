@@ -5,7 +5,6 @@ import main.java.dao.DBUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -13,14 +12,14 @@ import java.util.Date;
  * Created by devilpi on 06/01/2018.
  */
 public class Employee extends User {
-    int deparmentID;
+    int departmentID;
     Employee(User user) throws SQLException {
         this.age = user.age;
         this.employeeId = user.employeeId;
         this.name = user.name;
         this.password = user.password;
         this.type = TYPE.EMPLOYEE;
-        this.deparmentID = queryDepartmentID();
+        this.departmentID = queryDepartmentID();
     }
     private int queryDepartmentID() throws SQLException {
 
@@ -58,7 +57,7 @@ public class Employee extends User {
         Date date = new Date();
         String sql = String.format("SELECT * FROM attendance  " +
                 "WHERE employee_id = %d AND date = \'%s\'",employeeId,sdf.format(date));
-        System.out.println(sql);
+       // System.out.println(sql);
         ResultSet resultSet = null;
         try {
             resultSet = DBUtils.executeSql(sql);
@@ -73,7 +72,7 @@ public class Employee extends User {
             sql1 =  String.format("UPDATE attendance SET sign_off_time = " +
                     "\'%s\' WHERE employee_id = %d AND date = \'%s\'",sdf1.format(date),employeeId,sdf.format(date));
         }
-        System.out.println(sql1);
+        //System.out.println(sql1);
         try {
             DBUtils.executeUpdate(sql1);
         } catch (Exception e) {
@@ -81,4 +80,32 @@ public class Employee extends User {
         }
         return true;
     }
+    boolean askLeave(String begin, String end, int type, String reason){
+        String sql = String.format("INSERT INTO leave_info ( begin, end, leave_type, reason, employee_id) " +
+                "VALUES (\'%s\', \'%s\', %d, \'%s\', %d)", begin, end, type, reason, employeeId);
+        //System.out.println(sql);
+
+        try {
+            DBUtils.executeUpdate(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return true;
+
+    }
+    boolean askTrip(String begin, String end, int type, String business){
+        String sql = String.format("INSERT INTO trip ( begin, end, trip_type, business, employee_id) " +
+                "VALUES (\'%s\', \'%s\', %d, \'%s\', %d)", begin, end, type, business, employeeId);
+        //System.out.println(sql);
+
+        try {
+            DBUtils.executeUpdate(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
 }

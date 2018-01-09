@@ -25,7 +25,10 @@ public class DBUtils {
         stmt.executeUpdate(sql);
 
     }
-
+    public static int executeIncInsert(String sql) throws Exception{
+        Statement stmt = dbHelper.conn.createStatement();
+        return stmt.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+    }
     public static void dumpSql(String sql) {
         System.out.println(sql);
     }
