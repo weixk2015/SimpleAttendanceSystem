@@ -43,6 +43,7 @@ public class Employee extends User {
 
     }
     boolean checkIn() throws DuplicateException {
+        log("checkin","");
         SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD");
         SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm:ss");
         Date date = new Date();
@@ -57,6 +58,7 @@ public class Employee extends User {
         return true;
     }
     boolean checkOff() throws SQLException {
+        log("checkout","");
         SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD");
         SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm:ss");
         Date date = new Date();
@@ -86,6 +88,7 @@ public class Employee extends User {
         return true;
     }
     int askLeave(String begin, String end, int type, String reason){
+        log("submit_leave","");
         String sql = String.format("INSERT INTO leave_info ( begin, end, leave_type, reason, employee_id) " +
                 "VALUES (\'%s\', \'%s\', %d, \'%s\', %d)", begin, end, type, reason, employeeId);
         //System.out.println(sql);
@@ -100,6 +103,7 @@ public class Employee extends User {
 
     }
     int askTrip(String begin, String end, int type, String business){
+        log("submit_trip","");
         String sql = String.format("INSERT INTO trip ( begin, end, trip_type, business, employee_id) " +
                 "VALUES (\'%s\', \'%s\', %d, \'%s\', %d)", begin, end, type, business, employeeId);
         //System.out.println(sql);

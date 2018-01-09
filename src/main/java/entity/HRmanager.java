@@ -56,4 +56,26 @@ public class HRmanager extends User {
         }
         return true;
     }
+    public boolean modifyUser(int age, String name, int ID) {
+        String sql = String.format("SELECT * FROM user WHERE employee_id=%d", ID);
+        ResultSet resultSet = null;
+        try {
+            resultSet = DBUtils.executeSql(sql);
+            boolean ret = resultSet.next();
+            if (!ret)
+                return false;
+            TYPE type = TYPE.values()[resultSet.getInt("type")];
+            if (type!=TYPE.EMPLOYEE)
+                return false;
+            String sql1 = String.format("UPDATE user SET age=%d, name=\'%s\' WHERE employee_id=%d", age, name, ID);
+            DBUtils.executeUpdate(sql1);
+            } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+    public void modifyEmployee(int ID, int departmentID) throws Exception {
+        String sql = String.format("UPDATE employee SET department_id = %d WHERE employee_id=%d", departmentID, ID);
+        DBUtils.executeUpdate(sql);
+    }
 }
