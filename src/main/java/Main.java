@@ -29,7 +29,7 @@ public class Main {
     public static void test() {
         SystemManager systemManager = new SystemManager();
         try {
-            systemManager.showLog("2018-01-09 15:45:00", "2018-01-09 15:45:59");
+            systemManager.showUsers();
         } catch (Exception e) {
             e.printStackTrace();
         }
