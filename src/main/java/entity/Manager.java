@@ -113,4 +113,45 @@ public class Manager extends User {
         System.out.printf("%-8d %-10s %-15s \n", resultSet.getInt("department_id"),
                 resultSet.getString("department_name"),name );
     }
+    public int addDepartment(String departmentName, int managerID) throws SQLException, NoSuchUserException {
+        String sql =  String.format( "SELECT * FROM user WHERE employee_id = %d",managerID);
+        System.out.println(sql);
+        ResultSet resultSet = null;
+        try {
+            resultSet = DBUtils.executeSql(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (!resultSet.next())
+            throw new NoSuchUserException();
+        String sql1 = String.format("INSERT INTO department (department_name, manager_id) " +
+                "VALUES (\'%s\', %d)",departmentName, managerID);
+        try {
+            return DBUtils.executeIncInsert(sql1);
+        } catch (Exception e) {
+            return -1;
+        }
+
+    }
+    public boolean modifyDepartment(int departmentID, String departmentName, int managerID) throws SQLException, NoSuchUserException {
+        String sql =  String.format( "SELECT * FROM user WHERE employee_id = %d",managerID);
+        System.out.println(sql);
+        ResultSet resultSet = null;
+        try {
+            resultSet = DBUtils.executeSql(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (!resultSet.next())
+            throw new NoSuchUserException();
+        String sql1 = String.format("UPDATE department SET department_name =  \'%s\',manager_id = %d " +
+                "WHERE department_id = %d" ,departmentName, managerID, departmentID);
+        try {
+            DBUtils.executeIncInsert(sql1);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
 }
