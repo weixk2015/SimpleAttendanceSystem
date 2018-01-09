@@ -53,7 +53,7 @@ public class Manager extends User {
         return true;
     }
 
-    public boolean modifyUser(int age, String name, int ID) {
+    public boolean modifyUser(int age, String name, String password, int ID) {
         String sql = String.format("SELECT * FROM user WHERE employee_id=%d", ID);
         ResultSet resultSet = null;
         try {
@@ -64,7 +64,8 @@ public class Manager extends User {
             TYPE type = TYPE.values()[resultSet.getInt("type")];
             if (type!=TYPE.EMPLOYEE)
                 return false;
-            String sql1 = String.format("UPDATE user SET age=%d, name=\'%s\' WHERE employee_id=%d", age, name, ID);
+            String sql1 = String.format("UPDATE user SET age=%d, name=\'%s\',  password=\'%s\' WHERE employee_id=%d",
+                    age, name, password, ID);
             DBUtils.executeUpdate(sql1);
         } catch (Exception e) {
             return false;
