@@ -18,11 +18,17 @@ public class Manager extends User {
                 "VALUES (%d, \'%s\', \'%s\')",age, name, password);
         return DBUtils.executeIncInsert(sql);
     }
-    int deleteUser(int employee_id) throws Exception {
+    void deleteUser(int employee_id) throws Exception {
         if (this.type==TYPE.MANAGER)
             throw new PermisionDeniedException();
         String sql = String.format("DELETE FROM user WHERE employee_id = %d",employee_id);
-        return DBUtils.executeIncInsert(sql);
+        DBUtils.executeUpdate(sql);
+    }
+    void deleteEmployee(int employee_id) throws Exception {
+        if (this.type==TYPE.MANAGER)
+            throw new PermisionDeniedException();
+        String sql = String.format("DELETE FROM employee WHERE employee_id = %d",employee_id);
+        DBUtils.executeUpdate(sql);
     }
     boolean addEmployee(int ID,int departmentID) throws SQLException, NoSuchUserException, DuplicateException, PermisionDeniedException {
         if (this.type==TYPE.MANAGER)
