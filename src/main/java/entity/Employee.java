@@ -4,7 +4,9 @@ import main.java.dao.DBUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by devilpi on 06/01/2018.
@@ -26,9 +28,9 @@ public class Employee extends User {
         return resultSet.getInt(0);
     }
     boolean signIn(){
-        SimpleDateFormat format = new SimpleDateFormat("");
-        //String sql = String.format("INSERT INTO attendance (employee_id, date, sign_in_time) " +
-         //       "VALUES (%d, %s, %s)",employeeId,);
+        Timestamp timestamp = new Timestamp(new Date().getTime());
+        String sql = String.format("INSERT INTO attendance (employee_id, date, sign_in_time) " +
+                "VALUES (%d, %s, %s)",employeeId,timestamp,timestamp);
         return true;
     }
 }
