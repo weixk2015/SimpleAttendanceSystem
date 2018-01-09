@@ -60,7 +60,7 @@ public class User {
     }
 
     public boolean login(int employeeId, String password) throws Exception {
-        String sql = String.format("SELECT * FROM user WHERE employee_id=%d and password=`%s`", employeeId, password);
+        String sql = String.format("SELECT * FROM user WHERE employee_id=%d and password='%s'", employeeId, password);
         ResultSet resultSet = DBUtils.executeSql(sql);
         while(resultSet.next()) {
             setName(resultSet.getString("name"));
