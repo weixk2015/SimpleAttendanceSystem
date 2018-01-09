@@ -14,7 +14,7 @@ import java.sql.ResultSet;
  */
 public class User {
 
-    enum TYPE {EMPLOYEE,HR,MANAGER,ADMIN};
+    public enum TYPE {EMPLOYEE,HR,MANAGER,ADMIN};
     protected int employeeId;
     protected int age;
     protected String password;
