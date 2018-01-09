@@ -126,6 +126,7 @@ public class Main {
                 modifyOtherEmployee();
                 break;
             case 4:
+                addDepartment();
                 break;
             case 5:
                 break;
@@ -142,14 +143,57 @@ public class Main {
         String password = sc.nextLine();
         System.out.println("Please input age: ");
         int age = Integer.parseInt(sc.nextLine());
-        int employeeId = ((Manager)user).addUser(age, name, password);
-        System.out.println("Please input department_name: ");
-        boolean flag = ((Manager)user).addEmployee(employeeId, )
+        try {
+            int employeeId = ((Manager)user).addUser(age, name, password, 0);
+            System.out.println("Please input department_name: ");
+            String departmentName = sc.nextLine();
+            int departmentId = ((Manager)user).getDepartmentID(departmentName);
+            boolean flag = ((Manager)user).addEmployee(employeeId, departmentId);
+            if(flag) {
+                System.out.println("Add employee success!");
+            } else {
+                System.out.println("Add employee failed!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void modifyOtherEmployee() {
         System.out.println("Please input employee_id: ");
         int employeeId = Integer.parseInt(sc.nextLine());
+        System.out.println("modify person info?(yes, no): ");
+        String ans = sc.nextLine();
+        if(ans.equals("yes")) {
+            System.out.println("Please input new name: ");
+            String name = sc.nextLine();
+            System.out.println("Please input new password: ");
+            String password = sc.nextLine();
+            System.out.println("Please input new age: ");
+            int age = Integer.parseInt(sc.nextLine());
+            ((Manager)user).modifyUser(age, name, password, employeeId);
+            System.out.println("modify success!");
+        }
+        System.out.println("modify department info?(yes, no): ");
+        ans = sc.nextLine();
+        if(ans.equals("yes")) {
+            System.out.println("Please input new department_name: ");
+            String name = sc.nextLine();
+            try {
+                int departmentId = ((Manager)user).getDepartmentID(name);
+                ((Manager)user).modifyEmployee(employeeId, departmentId);
+                System.out.println("modify success!");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public static void addDepartment() {
+        System.out.println("Please input department_name: ");
+        String departmentName = sc.nextLine();
+        System.out.println("Please input ");
 
     }
 
