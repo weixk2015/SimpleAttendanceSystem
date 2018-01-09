@@ -18,7 +18,7 @@ public class HRmanager extends User {
     }
     boolean addEmployee(int ID,int departmentID) throws SQLException, NoSuchUserException, DuplicateException {
         String sql =  String.format( "SELECT * FROM user WHERE employee_id = %d",ID);
-        System.out.println(sql);
+        //System.out.println(sql);
         ResultSet resultSet = null;
         try {
             resultSet = DBUtils.executeSql(sql);
@@ -33,6 +33,26 @@ public class HRmanager extends User {
            DBUtils.executeUpdate(sql1);
         } catch (Exception e) {
             throw new DuplicateException();
+        }
+        return true;
+    }
+    boolean addDepartment(String departmentName, int managerID) throws SQLException, NoSuchUserException {
+        String sql =  String.format( "SELECT * FROM user WHERE employee_id = %d",managerID);
+        System.out.println(sql);
+        ResultSet resultSet = null;
+        try {
+            resultSet = DBUtils.executeSql(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (!resultSet.next())
+            throw new NoSuchUserException();
+        String sql1 = String.format("INSERT INTO department (department_name, manager_id) " +
+                "VALUES (%s, %d)",departmentName, managerID);
+        try {
+            DBUtils.executeUpdate(sql1);
+        } catch (Exception e) {
+            throw new SQLException();
         }
         return true;
     }
