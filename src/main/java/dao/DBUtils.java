@@ -14,7 +14,7 @@ public class DBUtils {
         ResultSet resultSet = null;
         try {
             Statement stmt = dbHelper.conn.createStatement();
-            resultSet = stmt.executeQuery("SELECT * FROM room");
+            resultSet = stmt.executeQuery(sql);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -24,7 +24,7 @@ public class DBUtils {
     public static void executeUpdate(String sql) {
         try {
             Statement stmt = dbHelper.conn.createStatement();
-            stmt.executeUpdate("SELECT * FROM room");
+            stmt.executeUpdate(sql);
         } catch (Exception e) {
             e.printStackTrace();
         }
