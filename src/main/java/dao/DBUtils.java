@@ -11,7 +11,7 @@ import com.ibatis.common.resources.Resources;
 public class DBUtils {
     public static DBHelper dbHelper = new DBHelper("attendance_eva");
     public static ResultSet executeSql(String sql) throws Exception {
-        dumpSql(sql);
+        //dumpSql(sql);
         ResultSet resultSet = null;
 
         Statement stmt = dbHelper.conn.createStatement();
