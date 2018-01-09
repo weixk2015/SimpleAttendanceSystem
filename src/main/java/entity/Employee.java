@@ -14,7 +14,7 @@ import java.util.Date;
  */
 public class Employee extends User {
     int departmentID;
-    Employee(User user) throws SQLException {
+    public Employee(User user) throws SQLException {
         this.age = user.age;
         this.employeeId = user.employeeId;
         this.name = user.name;
