@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * Created by devilpi on 06/01/2018.
  */
-public class SystemManager extends User {
+public class SystemManager extends Manager {
     public void showLog(String start, String end) throws Exception, IllegalParameterException {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -35,11 +35,6 @@ public class SystemManager extends User {
                 resultSet.getString("time"), resultSet.getString("action"), resultSet.getString("description"));
     }
 
-    public void dumpUser(ResultSet resultSet) throws Exception {
-        System.out.printf("%-8d %-10s %-15s %-8d ", resultSet.getInt("employee_id"),
-                resultSet.getString("name"), resultSet.getString("password"), resultSet.getInt("age"));
-        System.out.println(TYPE.values()[resultSet.getInt("type")]);
-    }
 
     public void deleteLog(String start, String end) throws Exception, IllegalParameterException {
 
