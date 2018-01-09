@@ -91,7 +91,7 @@ public class Main {
 
     public static void modify() {
         if(!checkLogin()) return;
-        if(user instanceof Employee) modifyEmployee();
+        if(user instanceof Employee || user instanceof DepartmentManager) modifyEmployee();
         else modifyManager();
     }
 
@@ -111,6 +111,45 @@ public class Main {
     }
 
     public static void modifyManager() {
+        System.out.println("Please choose what you want to modify: " +
+                "1.self info\t2.new employee\t3.modify employee\n" +
+                "4.new department\t5.modify department");
+        int type = Integer.parseInt(sc.nextLine());
+        switch (type) {
+            case 1:
+                modifyEmployee();
+                break;
+            case 2:
+                addEmployee();
+                break;
+            case 3:
+                modifyOtherEmployee();
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            default:
+                System.out.println("No such choice!");
+                break;
+        }
+    }
+
+    public static void addEmployee() {
+        System.out.println("Please input name: ");
+        String name = sc.nextLine();
+        System.out.println("Please input password: ");
+        String password = sc.nextLine();
+        System.out.println("Please input age: ");
+        int age = Integer.parseInt(sc.nextLine());
+        int employeeId = ((Manager)user).addUser(age, name, password);
+        System.out.println("Please input department_name: ");
+        boolean flag = ((Manager)user).addEmployee(employeeId, )
+    }
+
+    public static void modifyOtherEmployee() {
+        System.out.println("Please input employee_id: ");
+        int employeeId = Integer.parseInt(sc.nextLine());
 
     }
 
