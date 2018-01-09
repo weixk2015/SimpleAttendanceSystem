@@ -11,11 +11,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Manager extends User {
-    int addUser(int age, String name, String password) throws Exception {
+    int addUser(int age, String name, String password,int type) throws Exception {
         if (this.type==TYPE.MANAGER)
             throw new PermisionDeniedException();
-        String sql = String.format("INSERT INTO user (age, name, password) " +
-                "VALUES (%d, \'%s\', \'%s\')",age, name, password);
+        String sql = String.format("INSERT INTO user (age, name, password, type) " +
+                "VALUES (%d, \'%s\', \'%s\', %d)",age, name, password, type);
         return DBUtils.executeIncInsert(sql);
     }
     void deleteUser(int employee_id) throws Exception {
@@ -78,11 +78,38 @@ public class Manager extends User {
     public void showUsers() throws Exception {
 
     }
+    public void showDepartment(int departmentID) throws Exception {
+        String sql = "SELECT * FROM department WHERE department_id = "+ departmentID;
+        ResultSet resultSet = DBUtils.executeSql(sql);
+
+        System.out.println("id       name       manager");
+        while(resultSet.next()) {
+            dumpDepartment(resultSet);
+        }
+    }
+    public int getDepartmentID(String departmentName) throws Exception {
+        String sql = "SELECT department_id FROM department WHERE department_n = "+departmentName;
+        ResultSet resultSet = DBUtils.executeSql(sql);
+
+        if (resultSet.next()) {
+            return resultSet.getInt("department_id");
+        }
+        return -1;
+    }
     public void dumpUser(ResultSet resultSet) throws Exception {
         System.out.printf("%-8d %-10s %-15s %-8d ", resultSet.getInt("employee_id"),
                 resultSet.getString("name"), resultSet.getString("password"), resultSet.getInt("age"));
         System.out.println(TYPE.values()[resultSet.getInt("type")]);
     }
 
-
+    public void dumpDepartment(ResultSet resultSet) throws Exception {
+        int id= resultSet.getInt("manager_id");
+        String sql = String.format("SELECT name FROM user WHERE employee_id = %d",id);
+        String name = "";
+        ResultSet resultSet1 = DBUtils.executeSql(sql);
+        if (resultSet1.next())
+            name = resultSet1.getString("name");
+        System.out.printf("%-8d %-10s %-15s \n", resultSet.getInt("department_id"),
+                resultSet.getString("department_name"),name );
+    }
 }
