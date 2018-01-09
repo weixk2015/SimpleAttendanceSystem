@@ -1,6 +1,7 @@
 package main.java.entity;
 
 import main.java.Exception.DuplicateException;
+import main.java.Exception.NoSuchUserException;
 import main.java.dao.DBUtils;
 
 import java.sql.ResultSet;
@@ -19,9 +20,13 @@ public class Employee extends User {
         this.name = user.name;
         this.password = user.password;
         this.type = TYPE.EMPLOYEE;
-        this.departmentID = queryDepartmentID();
+        try {
+            this.departmentID = queryDepartmentID();
+        } catch (NoSuchUserException e) {
+            e.printStackTrace();
+        }
     }
-    private int queryDepartmentID() throws SQLException {
+    private int queryDepartmentID() throws SQLException, NoSuchUserException {
 
         String sql =  String.format( "SELECT department_id FROM employee WHERE employee_id = %d",employeeId);
         ResultSet resultSet = null;
@@ -34,7 +39,7 @@ public class Employee extends User {
         if (resultSet.next())
                 return resultSet.getInt(1);
             else
-                throw new SQLException();
+                throw new NoSuchUserException();
 
     }
     boolean checkIn() throws DuplicateException {
@@ -80,32 +85,33 @@ public class Employee extends User {
         }
         return true;
     }
-    boolean askLeave(String begin, String end, int type, String reason){
+    int askLeave(String begin, String end, int type, String reason){
         String sql = String.format("INSERT INTO leave_info ( begin, end, leave_type, reason, employee_id) " +
                 "VALUES (\'%s\', \'%s\', %d, \'%s\', %d)", begin, end, type, reason, employeeId);
         //System.out.println(sql);
 
         try {
-            DBUtils.executeUpdate(sql);
+            return DBUtils.executeIncInsert(sql);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return true;
+        return -1;
 
     }
-    boolean askTrip(String begin, String end, int type, String business){
+    int askTrip(String begin, String end, int type, String business){
         String sql = String.format("INSERT INTO trip ( begin, end, trip_type, business, employee_id) " +
                 "VALUES (\'%s\', \'%s\', %d, \'%s\', %d)", begin, end, type, business, employeeId);
         //System.out.println(sql);
 
+
         try {
-            DBUtils.executeUpdate(sql);
+            return DBUtils.executeIncInsert(sql);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return true;
+        return -1;
     }
 
 }

@@ -6,9 +6,11 @@ import java.sql.SQLException;
 
 public class Employee_test {
     public static void main(String[] args) throws SQLException {
-        Employee employee = new Employee(new User());
-        employee.employeeId = 0;
-//        employee.checkIn();
-        employee.checkOff();
+       HRmanager hRmanager = new HRmanager();
+        try {
+            System.out.println(hRmanager.addEmployee(5,0));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
