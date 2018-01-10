@@ -86,4 +86,12 @@ public class SystemManager extends Manager {
             dumpUserInfo(resultSet);
         }
     }
+    public void setOfficeHour(String begin, String end) throws Exception {
+        String sql = String.format("Update config SET office_begin = \'%s\' AND office_end = \'%s\'",begin,end);
+        DBUtils.executeUpdate(sql);
+    }
+    public void setHoliday(String day, int isHoliday) throws Exception {
+        String sql = String.format("UPDATE holiday SET is_holiday = %d WHERE day = \'%s\'",isHoliday,day);
+        DBUtils.executeUpdate(sql);
+    }
 }
