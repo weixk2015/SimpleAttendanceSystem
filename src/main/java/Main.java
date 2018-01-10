@@ -131,7 +131,7 @@ public class Main {
         int age = Integer.parseInt(sc.nextLine());
         try {
             user.modify(age, password, name);
-            System.out.println("modify success!");
+            System.out.println("modify successfully!");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -172,7 +172,7 @@ public class Main {
             int departmentId = ((Manager)user).getDepartmentID(departmentName);
             boolean flag = ((Manager)user).addEmployee(employeeId, departmentId);
             if(flag) {
-                System.out.println("Add employee success!");
+                System.out.println("Add employee successfully!");
             } else {
                 System.out.println("Add employee failed!");
             }
@@ -194,7 +194,7 @@ public class Main {
             System.out.println("Please input new age: ");
             int age = Integer.parseInt(sc.nextLine());
             ((Manager)user).modifyUser(age, name, password, employeeId);
-            System.out.println("modify success!");
+            System.out.println("modify successfully!");
         }
         System.out.println("modify department info?(yes, no): ");
         ans = sc.nextLine();
@@ -204,7 +204,7 @@ public class Main {
             try {
                 int departmentId = ((Manager)user).getDepartmentID(name);
                 ((Manager)user).modifyEmployee(employeeId, departmentId);
-                System.out.println("modify success!");
+                System.out.println("modify successfully!");
             } catch (Exception e) {
                 System.out.println("modify failed!");
             }
@@ -220,7 +220,7 @@ public class Main {
         try {
             ((Manager)user).addDepartment(departmentName, managerId);
             ((Manager)user).modifyUserType(2, managerId);
-            System.out.println("modify success!");
+            System.out.println("modify successfully!");
         } catch (Exception e) {
             System.out.println("modify failed!");
         }
@@ -236,7 +236,7 @@ public class Main {
         int managerId = Integer.parseInt(sc.nextLine());
         try {
             ((Manager)user).modifyDepartment(departmentId, departmentName, managerId);
-            System.out.println("modify success!");
+            System.out.println("modify successfully!");
         } catch (Exception e) {
             System.out.println("modify failed!");
         }
@@ -344,7 +344,7 @@ public class Main {
             String name = sc.nextLine();
             try {
                 ((Manager)user).queryEmployeeByName(name);
-            } catch (PermisionDeniedException pe) {
+            } catch (PermisionDeniedException e) {
                 System.out.println("Your permission is insufficient");
             } catch (Exception e) {
                 System.out.println("query failed!");
@@ -352,7 +352,7 @@ public class Main {
         } else {
             try {
                 ((Manager)user).queryEmployeeById(employeeId);
-            } catch (PermisionDeniedException) {
+            } catch (PermisionDeniedException e) {
                 System.out.println("Your permission is insufficient");
             } catch (Exception e) {
                 System.out.println("query failed!");
@@ -379,7 +379,7 @@ public class Main {
             int employeeId = Integer.parseInt(sc.nextLine());
             try {
                 ((Manager)user).deleteUser(employeeId);
-                System.out.println("delete success");
+                System.out.println("delete successfully");
             } catch (Exception e) {
                 System.out.println("delete failed");
             }
@@ -400,25 +400,141 @@ public class Main {
     }
 
     public static void tripEmployee() {
-        System.out.println("");
+        System.out.println("Please input trip type: \n" +
+                "1.company assigned\t2.personal application");
+        int type = Integer.parseInt(sc.nextLine());
+        if(type > 2 || type < 1) {
+            System.out.println("No such choice!");
+            return;
+        }
+        System.out.println("Please input begin date(YYYY-mm-dd, eg, 2018-01-10): ");
+        String begin = sc.nextLine();
+        System.out.println("Please input end date(YYYY-mm-dd, eg, 2018-01-11): ");
+        String end = sc.nextLine();
+        System.out.println("Please input your business trip reason: ");
+        String reason = sc.nextLine();
+        try {
+            ((Employee)user).askTrip(begin, end, type, reason);
+            System.out.println("apply successfully!");
+        } catch (Exception e) {
+            System.out.println("apply failed!");
+        }
     }
 
     public static void tripDepartmentManager() {
-
+        try {
+            ((DepartmentManager)user).checkApply();
+            while(true) {
+                System.out.println("Please select an apply id(type -1 to quit): ");
+                int applyId = Integer.parseInt(sc.nextLine());
+                if(applyId == -1) break;
+                System.out.println("Please input your response(1 for agree, 2 for reject): ");
+                int result = Integer.parseInt(sc.nextLine());
+                if(result == 1) {
+                    try {
+                        ((DepartmentManager)user).permitTrip(applyId);
+                        System.out.println("agree successfully!");
+                    } catch (Exception e) {
+                        System.out.println("agree failed!");
+                    }
+                } else if(result == 2) {
+                    System.out.println("Please input your reject reason: ");
+                    String reason = sc.nextLine();
+                    try {
+                        ((DepartmentManager)user).rejectTrip(applyId, reason);
+                        System.out.println("reject successfully!");
+                    } catch (Exception e) {
+                        System.out.println("reject failed!");
+                    }
+                } else {
+                    System.out.println("No such choice!");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("something wrong happened!");
+        }
     }
 
     public static void tripManager() {
-
+        try {
+            ((DepartmentManager)user).checkApply();
+        } catch (Exception e) {
+            System.out.println("something wrong happened!");
+        }
     }
 
     public static void leave() {
         if(!checkLogin()) return;
         if(user instanceof Employee) {
-
+            leaveEmployee();
         } else if(user instanceof DepartmentManager) {
-
+            leaveDepartmentManager();
         } else {
+            leaveManager();
+        }
+    }
 
+    public static void leaveEmployee() {
+        System.out.println("Please input leave type: \n" +
+                "1.sick leave\t2.personal leave\t3.maternity leave\t4.wedding leave\n");
+        int type = Integer.parseInt(sc.nextLine());
+        if(type > 4 || type < 1) {
+            System.out.println("No such choice!");
+            return;
+        }
+        System.out.println("Please input begin date(YYYY-mm-dd, eg, 2018-01-10): ");
+        String begin = sc.nextLine();
+        System.out.println("Please input end date(YYYY-mm-dd, eg, 2018-01-11): ");
+        String end = sc.nextLine();
+        System.out.println("Please input your leave reason: ");
+        String reason = sc.nextLine();
+        try {
+            ((Employee)user).askLeave(begin, end, type, reason);
+            System.out.println("apply successfully!");
+        } catch (Exception e) {
+            System.out.println("apply failed!");
+        }
+    }
+
+    public static void leaveDepartmentManager() {
+        try {
+            ((DepartmentManager)user).checkApply();
+            while(true) {
+                System.out.println("Please select an apply id(type -1 to quit): ");
+                int applyId = Integer.parseInt(sc.nextLine());
+                if(applyId == -1) break;
+                System.out.println("Please input your response(1 for agree, 2 for reject): ");
+                int result = Integer.parseInt(sc.nextLine());
+                if(result == 1) {
+                    try {
+                        ((DepartmentManager)user).permitLeave(applyId);
+                        System.out.println("agree successfully!");
+                    } catch (Exception e) {
+                        System.out.println("agree failed!");
+                    }
+                } else if(result == 2) {
+                    System.out.println("Please input your reject reason: ");
+                    String reason = sc.nextLine();
+                    try {
+                        ((DepartmentManager)user).rejectLeave(applyId, reason);
+                        System.out.println("reject successfully!");
+                    } catch (Exception e) {
+                        System.out.println("reject failed!");
+                    }
+                } else {
+                    System.out.println("No such choice!");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("something wrong happened!");
+        }
+    }
+
+    public static void leaveManager() {
+        try {
+            ((DepartmentManager)user).checkApply();
+        } catch (Exception e) {
+            System.out.println("something wrong happened!");
         }
     }
 
@@ -427,7 +543,7 @@ public class Main {
         if(user instanceof Employee) {
             try {
                 ((Employee)user).checkIn();
-                System.out.println("checkin success");
+                System.out.println("checkin successfully");
             } catch (Exception e) {
                 System.out.println("checkin failed!");
             }
@@ -441,7 +557,7 @@ public class Main {
         if(user instanceof Employee) {
             try {
                 ((Employee)user).checkOff();
-                System.out.println("checkout success");
+                System.out.println("checkout successfully");
             } catch (Exception e) {
                 System.out.println("checkout failed!");
             }
