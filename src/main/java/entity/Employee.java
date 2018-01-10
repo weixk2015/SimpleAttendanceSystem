@@ -181,4 +181,5 @@ public class Employee extends User {
                 resultSet.getInt("trip_type"),
                 resultSet.getString("business"));
     }
+
 }

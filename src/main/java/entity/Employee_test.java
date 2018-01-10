@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class Employee_test {
     public static void main(String[] args) throws SQLException {
-       HRmanager hRmanager = new HRmanager();
+       HRmanager hRmanager = new HRmanager(new User());
         try {
             System.out.println(hRmanager.addEmployee(5,0));
         } catch (Exception e) {
