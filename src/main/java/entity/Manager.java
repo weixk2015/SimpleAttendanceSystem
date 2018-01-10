@@ -14,6 +14,7 @@ public class Manager extends User {
     public int addUser(int age, String name, String password,int type) throws Exception {
         if (this.type==TYPE.MANAGER)
             throw new PermisionDeniedException();
+        log("add_user","");
         String sql = String.format("INSERT INTO user (age, name, password, type) " +
                 "VALUES (%d, \'%s\', \'%s\', %d)",age, name, password, type);
         return DBUtils.executeIncInsert(sql);
@@ -21,18 +22,23 @@ public class Manager extends User {
     public void deleteUser(int employee_id) throws Exception {
         if (this.type==TYPE.MANAGER)
             throw new PermisionDeniedException();
+        log("del_user","");
         String sql = String.format("DELETE FROM user WHERE employee_id = %d",employee_id);
         DBUtils.executeUpdate(sql);
     }
     public void deleteEmployee(int employee_id) throws Exception {
         if (this.type==TYPE.MANAGER)
             throw new PermisionDeniedException();
+
+        log("del_employee","");
         String sql = String.format("DELETE FROM employee WHERE employee_id = %d",employee_id);
         DBUtils.executeUpdate(sql);
     }
     public boolean addEmployee(int ID,int departmentID) throws SQLException, NoSuchUserException, DuplicateException, PermisionDeniedException {
         if (this.type==TYPE.MANAGER)
             throw new PermisionDeniedException();
+        log("add_employee","");
+
         String sql =  String.format( "SELECT * FROM user WHERE employee_id = %d",ID);
         //System.out.println(sql);
         ResultSet resultSet = null;
@@ -54,6 +60,7 @@ public class Manager extends User {
     }
 
     public boolean modifyUser(int age, String name, String password, int ID) {
+        log("modify_user","");
         String sql = String.format("SELECT * FROM user WHERE employee_id=%d", ID);
         ResultSet resultSet = null;
         try {
@@ -73,6 +80,8 @@ public class Manager extends User {
         return true;
     }
     public boolean modifyUserType(int type, int ID) {
+
+        log("modify_user","");
         String sql1 = String.format("UPDATE user SET type=%d WHERE employee_id=%d", type, ID);
         try {
             DBUtils.executeUpdate(sql1);
@@ -82,6 +91,8 @@ public class Manager extends User {
         return true;
     }
     public void modifyEmployee(int ID, int departmentID) throws Exception {
+
+        log("modify_employee","");
         String sql = String.format("UPDATE employee SET department_id = %d WHERE employee_id=%d", departmentID, ID);
         DBUtils.executeUpdate(sql);
     }
@@ -106,11 +117,7 @@ public class Manager extends User {
         }
         return -1;
     }
-    public void dumpUser(ResultSet resultSet) throws Exception {
-        System.out.printf("%-8d %-10s %-15s %-8d ", resultSet.getInt("employee_id"),
-                resultSet.getString("name"), resultSet.getString("password"), resultSet.getInt("age"));
-        System.out.println(TYPE.values()[resultSet.getInt("type")]);
-    }
+
 
     public void dumpDepartment(ResultSet resultSet) throws Exception {
         int id= resultSet.getInt("manager_id");
@@ -153,6 +160,7 @@ public class Manager extends User {
         }
         if (!resultSet.next())
             throw new NoSuchUserException();
+        modifyUserType(2,managerID);
         String sql1 = String.format("UPDATE department SET department_name =  \'%s\',manager_id = %d " +
                 "WHERE department_id = %d" ,departmentName, managerID, departmentID);
         try {
