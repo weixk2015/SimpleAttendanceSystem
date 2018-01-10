@@ -99,6 +99,17 @@ public class Manager extends User {
     public void showUsers() throws Exception {
 
     }
+    public void queryEmployeeById(int id) throws Exception {
+
+    }
+    public void queryEmployeeByName(String name) throws Exception {
+
+    }
+    public void dumpUserInfo(ResultSet resultSet) throws Exception {
+        System.out.printf("%-8d %-10s %-8d ", resultSet.getInt("employee_id"),
+                resultSet.getString("name"), resultSet.getInt("age"));
+        System.out.println(TYPE.values()[resultSet.getInt("type")]);
+    }
     public void showDepartment(int departmentID) throws Exception {
         String sql = "SELECT * FROM department WHERE department_id = "+ departmentID;
         ResultSet resultSet = DBUtils.executeSql(sql);
@@ -109,7 +120,7 @@ public class Manager extends User {
         }
     }
     public int getDepartmentID(String departmentName) throws Exception {
-        String sql = "SELECT department_id FROM department WHERE department_n = "+departmentName;
+        String sql = String.format("SELECT department_id FROM department WHERE department_n = \'%s\'",departmentName);
         ResultSet resultSet = DBUtils.executeSql(sql);
 
         if (resultSet.next()) {
@@ -169,6 +180,5 @@ public class Manager extends User {
         } catch (Exception e) {
             return false;
         }
-
     }
 }

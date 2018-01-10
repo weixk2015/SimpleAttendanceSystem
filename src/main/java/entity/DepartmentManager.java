@@ -1,5 +1,7 @@
 package main.java.entity;
 
+import main.java.Exception.NoSuchUserException;
+import main.java.Exception.PermisionDeniedException;
 import main.java.dao.DBUtils;
 
 import java.sql.ResultSet;
@@ -9,7 +11,19 @@ import java.sql.SQLException;
  * Created by devilpi on 06/01/2018.
  */
 public class DepartmentManager extends Manager {
-
+    int departmentID;
+    public DepartmentManager(User user) {
+        this.age = user.age;
+        this.employeeId = user.employeeId;
+        this.name = user.name;
+        this.password = user.password;
+        this.type = TYPE.EMPLOYEE;
+        try {
+            this.departmentID = queryDepartmentID();
+        } catch (NoSuchUserException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public void checkApply() throws Exception {
         String sql = String.format("SELECT leave_info.apply_id,leave_info.begin, leave_info.end, leave_info.employee_id," +
                 "leave_info.leave_type, leave_info.reason FROM leave_info,employee,department" +
@@ -63,5 +77,52 @@ public class DepartmentManager extends Manager {
         String sql =  String.format("UPDATE trip SET status = 2,reject_reason = %s" +
                 "WHERE apply_id = %d ",reason, apply_id);
         DBUtils.executeUpdate(sql);
+    }
+    public void queryEmployeeById(int id) throws Exception {
+
+        String sql = "SELECT * FROM user WHERE employee_id = "+id;
+        ResultSet resultSet = DBUtils.executeSql(sql);
+        int type = resultSet.getInt("type");
+        if (type!=0)
+            throw new PermisionDeniedException();
+        String employeeSql = "SELECT * FROM employee WHERE employee_id = "+id;
+        ResultSet resultSet1 = DBUtils.executeSql(employeeSql);
+        if (resultSet1.getInt("department_id")!=departmentID)
+            throw new PermisionDeniedException();
+        System.out.println("id       name        age      type");
+        while(resultSet.next()) {
+            dumpUserInfo(resultSet);
+        }
+    }
+    public void queryEmployeeByName(String name) throws Exception {
+        String sql = String.format("SELECT * FROM user WHERE name = \'%s\'",name );
+        ResultSet resultSet = DBUtils.executeSql(sql);
+        int type = resultSet.getInt("type");
+        if (type!=0)
+            throw new PermisionDeniedException();
+        String employeeSql = "SELECT * FROM employee WHERE employee_id = "+resultSet.getInt("employee_id");
+        ResultSet resultSet1 = DBUtils.executeSql(employeeSql);
+        if (resultSet1.getInt("department_id")!=departmentID)
+            throw new PermisionDeniedException();
+        System.out.println("id       name        age      type");
+        while(resultSet.next()) {
+            dumpUserInfo(resultSet);
+        }
+    }
+    private int queryDepartmentID() throws SQLException, NoSuchUserException {
+
+        String sql =  String.format( "SELECT department_id FROM department WHERE manager_id = %d",employeeId);
+        ResultSet resultSet = null;
+
+        try {
+            resultSet = DBUtils.executeSql(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (resultSet.next())
+            return resultSet.getInt(1);
+        else
+            throw new NoSuchUserException();
+
     }
 }

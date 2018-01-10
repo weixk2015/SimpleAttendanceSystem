@@ -1,9 +1,11 @@
 package main.java.entity;
 
 import main.java.Exception.IllegalParameterException;
+import main.java.Exception.NoSuchUserException;
 import main.java.dao.DBUtils;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,6 +14,13 @@ import java.util.Date;
  * Created by devilpi on 06/01/2018.
  */
 public class SystemManager extends Manager {
+    public SystemManager(User user) {
+        this.age = user.age;
+        this.employeeId = user.employeeId;
+        this.name = user.name;
+        this.password = user.password;
+        this.type = TYPE.EMPLOYEE;
+    }
     public void showLog(String start, String end) throws Exception, IllegalParameterException {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -59,6 +68,22 @@ public class SystemManager extends Manager {
         System.out.println("id       name       password        age      type");
         while(resultSet.next()) {
             dumpUser(resultSet);
+        }
+    }
+    public void queryEmployeeById(int id) throws Exception {
+        String sql = "SELECT * FROM user WHERE employee_id = "+id;
+        ResultSet resultSet = DBUtils.executeSql(sql);
+        System.out.println("id       name        age      type");
+        while(resultSet.next()) {
+            dumpUserInfo(resultSet);
+        }
+    }
+    public void queryEmployeeByName(String name) throws Exception {
+        String sql = String.format("SELECT * FROM user WHERE name = \'%s\'",name );
+        ResultSet resultSet = DBUtils.executeSql(sql);
+        System.out.println("id       name        age      type");
+        while(resultSet.next()) {
+            dumpUserInfo(resultSet);
         }
     }
 }
