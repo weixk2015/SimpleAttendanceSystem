@@ -1,5 +1,6 @@
 package main.java;
 
+import main.java.Exception.PermisionDeniedException;
 import main.java.controller.Controller;
 import main.java.entity.*;
 
@@ -13,7 +14,7 @@ import main.java.entity.User;
  * Created by devilpi on 06/01/2018.
  */
 public class Main {
-    static String action[] = {"login", "logout", "query", "modify"};
+    static String action[] = {"login", "logout", "query", "add", "modify", "delete", "trip", "leave", "checkin", "checkout"};
 
     static Controller controller = new Controller();
     static User user = null;
@@ -66,11 +67,11 @@ public class Main {
                 switch (tmp.getType()) {
                     case EMPLOYEE: user = new Employee(tmp);
                         break;
-                    case HR: user = new HRmanager();
+                    case HR: user = new HRmanager(tmp);
                         break;
-                    case MANAGER: user = new DepartmentManager();
+                    case MANAGER: user = new DepartmentManager(tmp);
                         break;
-                    case ADMIN: user = new SystemManager();
+                    case ADMIN: user = new SystemManager(tmp);
                         break;
                     default: break;
                 }
@@ -87,6 +88,32 @@ public class Main {
     public static void logout() {
         if(!checkLogin()) return;
         user = null;
+    }
+
+    public static void add() {
+        if(!checkLogin()) return;
+        if(user instanceof Employee || user instanceof DepartmentManager) {
+            System.out.println("Sorry, your permission is insufficient!");
+        } else {
+            addManager();
+        }
+    }
+
+    public static void addManager() {
+        System.out.println("Please choose what you want to add: " +
+                "1.new employee\t2.new department\n");
+        int type = Integer.parseInt(sc.nextLine());
+        switch (type) {
+            case 1:
+                addEmployee();
+                break;
+            case 2:
+                addDepartment();
+                break;
+            default:
+                System.out.println("No such choice!");
+                break;
+        }
     }
 
     public static void modify() {
@@ -120,15 +147,9 @@ public class Main {
                 modifyEmployee();
                 break;
             case 2:
-                addEmployee();
-                break;
-            case 3:
                 modifyOtherEmployee();
                 break;
-            case 4:
-                addDepartment();
-                break;
-            case 5:
+            case 3:
                 modifyDepartment();
                 break;
             default:
@@ -233,7 +254,7 @@ public class Main {
         int type = Integer.parseInt(sc.nextLine());
         switch (type) {
             case 1:
-                user.queryUser();
+                queryEmployeeInfo();
                 break;
             case 2:
                 queryEmployeeAttendance();
@@ -250,20 +271,183 @@ public class Main {
         }
     }
 
+    public static void queryEmployeeInfo() {
+        try {
+            user.queryUser();
+        } catch (Exception e) {
+            System.out.println("query failed!");
+        }
+    }
+
     public static void queryEmployeeAttendance() {
 
     }
 
     public static void queryEmployeeLeaveInfo() {
-        System.out.println("");
+        System.out.println("Please choose order type: \n" +
+                "1.asc\t2.desc");
+        int orderType = Integer.parseInt(sc.nextLine()) - 1;
+        System.out.println("Please input longest days(if no need, input -1): ");
+        int dayUp = Integer.parseInt(sc.nextLine());
+        System.out.println("Please input shortest days(if no need, input -1): ");
+        int dayLow = Integer.parseInt(sc.nextLine());
+        try {
+            ((Employee)user).queryLeave(orderType, dayUp, dayLow);
+        } catch (Exception e) {
+            System.out.println("query failed!");
+        }
     }
 
     public static void queryEmployeeBusinessTrip() {
-
+        System.out.println("Please choose order type: \n" +
+                "1.asc\t2.desc");
+        int orderType = Integer.parseInt(sc.nextLine()) - 1;
+        System.out.println("Please input longest days(if no need, input -1): ");
+        int dayUp = Integer.parseInt(sc.nextLine());
+        System.out.println("Please input shortest days(if no need, input -1): ");
+        int dayLow = Integer.parseInt(sc.nextLine());
+        try {
+            ((Employee)user).queryTrip(orderType, dayUp, dayLow);
+        } catch (Exception e) {
+            System.out.println("query failed!");
+        }
     }
 
     public static void queryManager() {
+        System.out.println("Please choose the type you want to query: \n" +
+                "1.employee info\t2.attendance\t3.leave info\t4.business trip");
+        int type = Integer.parseInt(sc.nextLine());
+        switch (type) {
+            case 1:
+                queryManagerInfo();
+                break;
+            case 2:
+                queryManagerAttendance();
+                break;
+            case 3:
+                queryManagerLeaveInfo();
+                break;
+            case 4:
+                queryManagerBusinessTrip();
+                break;
+            default:
+                System.out.println("No such choice!");
+                break;
+        }
+    }
 
+    public static void queryManagerInfo() {
+        System.out.println("Please input employee id(-1 if you want to query by name): ");
+        int employeeId = Integer.parseInt(sc.nextLine());
+        if(employeeId == -1) {
+            System.out.println("Please input employee name: ");
+            String name = sc.nextLine();
+            try {
+                ((Manager)user).queryEmployeeByName(name);
+            } catch (PermisionDeniedException pe) {
+                System.out.println("Your permission is insufficient");
+            } catch (Exception e) {
+                System.out.println("query failed!");
+            }
+        } else {
+            try {
+                ((Manager)user).queryEmployeeById(employeeId);
+            } catch (PermisionDeniedException) {
+                System.out.println("Your permission is insufficient");
+            } catch (Exception e) {
+                System.out.println("query failed!");
+            }
+        }
+    }
+
+    public static void queryManagerAttendance() {
+
+    }
+
+    public static void queryManagerLeaveInfo() {
+
+    }
+
+    public static void queryManagerBusinessTrip() {
+
+    }
+
+    public static void delete() {
+        if(!checkLogin()) return;
+        if(user instanceof SystemManager) {
+            System.out.println("Please input employee_id: ");
+            int employeeId = Integer.parseInt(sc.nextLine());
+            try {
+                ((Manager)user).deleteUser(employeeId);
+                System.out.println("delete success");
+            } catch (Exception e) {
+                System.out.println("delete failed");
+            }
+        } else {
+            System.out.println("Sorry, your permission is insufficient!");
+        }
+    }
+
+    public static void trip() {
+        if(!checkLogin()) return;
+        if(user instanceof Employee) {
+            tripEmployee();
+        } else if(user instanceof DepartmentManager) {
+            tripDepartmentManager();
+        } else {
+            tripManager();
+        }
+    }
+
+    public static void tripEmployee() {
+        System.out.println("");
+    }
+
+    public static void tripDepartmentManager() {
+
+    }
+
+    public static void tripManager() {
+
+    }
+
+    public static void leave() {
+        if(!checkLogin()) return;
+        if(user instanceof Employee) {
+
+        } else if(user instanceof DepartmentManager) {
+
+        } else {
+
+        }
+    }
+
+    public static void checkin() {
+        if(!checkLogin()) return;
+        if(user instanceof Employee) {
+            try {
+                ((Employee)user).checkIn();
+                System.out.println("checkin success");
+            } catch (Exception e) {
+                System.out.println("checkin failed!");
+            }
+        } else {
+            System.out.println("You don't need to checkin!");
+        }
+    }
+
+    public static void checkout() {
+        if(!checkLogin()) return;
+        if(user instanceof Employee) {
+            try {
+                ((Employee)user).checkOff();
+                System.out.println("checkout success");
+            } catch (Exception e) {
+                System.out.println("checkout failed!");
+            }
+        } else {
+            System.out.println("You don't need to checkout!");
+        }
     }
 
     public static boolean checkLogin() {
@@ -273,5 +457,4 @@ public class Main {
         }
         return true;
     }
-
 }
