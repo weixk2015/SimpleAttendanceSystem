@@ -129,6 +129,7 @@ public class Main {
                 addDepartment();
                 break;
             case 5:
+                modifyDepartment();
                 break;
             default:
                 System.out.println("No such choice!");
@@ -155,7 +156,7 @@ public class Main {
                 System.out.println("Add employee failed!");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Add employee failed!");
         }
     }
 
@@ -184,7 +185,7 @@ public class Main {
                 ((Manager)user).modifyEmployee(employeeId, departmentId);
                 System.out.println("modify success!");
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println("modify failed!");
             }
         }
 
@@ -200,8 +201,68 @@ public class Main {
             ((Manager)user).modifyUserType(2, managerId);
             System.out.println("modify success!");
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("modify failed!");
         }
+
+    }
+
+    public static void modifyDepartment() {
+        System.out.println("Please input department_id: ");
+        int departmentId = Integer.parseInt(sc.nextLine());
+        System.out.println("Please input new department name: ");
+        String departmentName = sc.nextLine();
+        System.out.println("Please input new department manager id: ");
+        int managerId = Integer.parseInt(sc.nextLine());
+        try {
+            ((Manager)user).modifyDepartment(departmentId, departmentName, managerId);
+            System.out.println("modify success!");
+        } catch (Exception e) {
+            System.out.println("modify failed!");
+        }
+    }
+
+    public static void query() {
+        if(!checkLogin()) return;
+        if(user instanceof Employee) queryEmployee();
+        else queryManager();
+    }
+
+    public static void queryEmployee() {
+        System.out.println("Please choose the type you want to query: \n" +
+                "1.self info\t2.attendance\t3.leave info\t4.business trip");
+        int type = Integer.parseInt(sc.nextLine());
+        switch (type) {
+            case 1:
+                user.queryUser();
+                break;
+            case 2:
+                queryEmployeeAttendance();
+                break;
+            case 3:
+                queryEmployeeLeaveInfo();
+                break;
+            case 4:
+                queryEmployeeBusinessTrip();
+                break;
+            default:
+                System.out.println("No such choice!");
+                break;
+        }
+    }
+
+    public static void queryEmployeeAttendance() {
+
+    }
+
+    public static void queryEmployeeLeaveInfo() {
+        System.out.println("");
+    }
+
+    public static void queryEmployeeBusinessTrip() {
+
+    }
+
+    public static void queryManager() {
 
     }
 
