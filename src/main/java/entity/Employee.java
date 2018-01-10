@@ -117,5 +117,68 @@ public class Employee extends User {
 
         return -1;
     }
-
+    public int queryLeave(int order, int dayUP, int dayLow) throws Exception {
+        if (dayUP<=dayLow)
+            return 0;
+        String sqlOrder;
+        String sqlDayUp = "";
+        String sqlDayLow = "";
+        if (order==0)
+            sqlOrder = "asc";
+        else
+            sqlOrder = "desc";
+        if (dayUP!=-1)
+            sqlDayUp = "AND end - begin <= "+dayUP;
+        if (dayLow!=-1)
+            sqlDayLow = "AND end - begin >= "+dayLow;
+        String sql = String.format("SELECT * FROM leave_info WHERE employee_id = %d %s %s ORDER BY begin %s",
+                employeeId, sqlDayUp, sqlDayLow, sqlOrder);
+        ResultSet resultSet = DBUtils.executeSql(sql);
+        System.out.println("-------------leave_info--------------");
+        System.out.println("apply_id       begin       end     leave_type       status       reject_reason       reason ");
+        while(resultSet.next()) {
+            dumpLeaveInfo(resultSet);
+        }
+        return 0;
+    }
+    public int queryTrip(int order, int dayUP, int dayLow) throws Exception {
+        if (dayUP<=dayLow)
+            return 0;
+        String sqlOrder;
+        String sqlDayUp = "";
+        String sqlDayLow = "";
+        if (order==0)
+            sqlOrder = "asc";
+        else
+            sqlOrder = "desc";
+        if (dayUP!=-1)
+            sqlDayUp = "AND end - begin <= "+dayUP;
+        if (dayLow!=-1)
+            sqlDayLow = "AND end - begin >= "+dayLow;
+        String sql = String.format("SELECT * FROM trip WHERE employee_id = %d %s %s ORDER BY begin %s",
+                employeeId, sqlDayUp, sqlDayLow, sqlOrder);
+        ResultSet resultSet = DBUtils.executeSql(sql);
+        System.out.println("--------------trip_info---------------");
+        System.out.println("apply_id       begin       end      trip_type       status       reject_reason       business");
+        while(resultSet.next()) {
+            dumpTrip(resultSet);
+        }
+        return 0;
+    }
+    public void dumpLeaveInfo(ResultSet resultSet) throws SQLException {
+        System.out.printf("%-8d %-10s %-15s %8s %8s %8s %8s", resultSet.getInt("apply_id"),
+                resultSet.getString("begin"), resultSet.getString("end"),
+                resultSet.getInt("leave_type"),
+                Status.values()[resultSet.getInt("status")],
+                resultSet.getString("reject_reason"),
+                resultSet.getString("reason"));
+    }
+    public void dumpTrip(ResultSet resultSet) throws SQLException {
+        System.out.printf("%-8d %-10s %-15s %8s %8s %8s %8s", resultSet.getInt("apply_id"),
+                resultSet.getString("begin"), resultSet.getString("end"),
+                Status.values()[resultSet.getInt("status")],
+                resultSet.getString("reject_reason"),
+                resultSet.getInt("trip_type"),
+                resultSet.getString("business"));
+    }
 }

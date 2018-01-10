@@ -13,7 +13,7 @@ import java.sql.ResultSet;
  * Created by devilpi on 06/01/2018.
  */
 public class User {
-
+    public enum Status{waiting, permited, rejected};
     public enum TYPE {EMPLOYEE,HR,MANAGER,ADMIN};
     protected int employeeId;
     protected int age;
@@ -95,5 +95,19 @@ public class User {
     public void modify(int age, String password, String name) throws Exception {
         String sql = String.format("UPDATE user SET age=%d, password=\'%s\', name=\'%s\' WHERE employee_id=%d", age, password, name, employeeId);
         DBUtils.executeUpdate(sql);
+    }
+    public void queryUser() throws Exception {
+        String sql = "SELECT * FROM user WHERE employee_id = "+employeeId;
+        ResultSet resultSet = DBUtils.executeSql(sql);
+
+        System.out.println("id       name       password        age      type");
+        while(resultSet.next()) {
+            dumpUser(resultSet);
+        }
+    }
+    public void dumpUser(ResultSet resultSet) throws Exception {
+        System.out.printf("%-8d %-10s %-15s %-8d ", resultSet.getInt("employee_id"),
+                resultSet.getString("name"), resultSet.getString("password"), resultSet.getInt("age"));
+        System.out.println(TYPE.values()[resultSet.getInt("type")]);
     }
 }
