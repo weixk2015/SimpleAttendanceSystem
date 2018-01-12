@@ -138,7 +138,15 @@ public class Manager extends User {
         }
         return -1;
     }
+    public String getEmoployeeName(int ID) throws Exception {
+        String sql = String.format("SELECT name FROM user WHERE employee_id = \'%s\'",ID);
+        ResultSet resultSet = DBUtils.executeSql(sql);
 
+        if (resultSet.next()) {
+            return resultSet.getString("name");
+        }
+        return "";
+    }
     public void dumpDepartment(ResultSet resultSet) throws Exception {
         int id= resultSet.getInt("manager_id");
         String sql = String.format("SELECT name FROM user WHERE employee_id = %d",id);
@@ -190,16 +198,17 @@ public class Manager extends User {
             return false;
         }
     }
-    public void dumpAttendance(ResultSet resultSet) throws SQLException {
-        System.out.printf("%-8d %-8s %-10s %-15s %8s",
+    public void dumpAttendance(ResultSet resultSet) throws Exception {
+        System.out.printf("%-8d %-8s %-8d %-8s %-10s %-15s %8s",
                 resultSet.getInt("employee_id"),
-
+                getEmoployeeName(resultSet.getInt("employee_id")),
+                resultSet.getInt("department_id"),
                 resultSet.getString("date"), resultSet.getString("sign_in_time"),
                 resultSet.getString("sign_off_time"),
                 AttendanceStatus.values()[resultSet.getInt("status")]);
     }
     public int queryAttendance(int ID, int departID, String dateBegin, String dateEnd,int status,
-                               String order, String groupBy, String countBy, int oderByGroup) throws Exception {
+                               String order, String groupBy, int oderByGroup) throws Exception {
 
         String sqlDayBegin = "";
         String sqlDayEnd = "";
@@ -217,6 +226,7 @@ public class Manager extends User {
             sqlDepartmentID = "AND department_id = "+departID;
         if (status!=-1)
             sqlStatus = "AND status = "+status;
+
         if (!order.equals(""))
             sqlOrder = "ORDER BY "+order;
         String sql = String.format("SELECT * FROM attendance, employee WHERE attendance.employee_id = employee.employee_id" +
