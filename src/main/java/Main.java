@@ -453,8 +453,29 @@ public class Main {
                     break;
             }
         }
+        try {
+            ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "", -1);
+        } catch (PermisionDeniedException e) {
+            System.out.println("Sorry, your permission is insufficient!");
+        } catch (Exception e) {
+            System.out.println("query failed!");
+        }
+        System.out.println("Do you want to quit this query?(yes, no): ");
+        if("yes".equals(sc.nextLine())) return;
+        System.out.println("Please choose the type you want to query \n" +
+                "1.number of days\t2.number of employee");
+        type = Integer.parseInt(sc.nextLine());
+        switch (type) {
+            case 1:
+                
+                break;
+            case 2:
 
-
+                break;
+            default:
+                System.out.println("No such choice!");
+                break;
+        }
     }
 
     public static void queryManagerLeaveInfo() {
