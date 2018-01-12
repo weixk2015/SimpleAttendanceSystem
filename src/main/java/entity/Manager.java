@@ -213,7 +213,7 @@ public class Manager extends User {
                 resultSet.getString("count"));
     }
     public int queryAttendance(int ID, int departID, String dateBegin, String dateEnd,int status,
-                               String order, String groupBy, int oderByCount) throws Exception {
+                               String order, String groupBy, String countArg, int oderByCount) throws Exception {
         String sqlDayBegin = "";
         String sqlDayEnd = "";
         String sqlEmployeeID = "";
@@ -239,9 +239,12 @@ public class Manager extends User {
             }else if (oderByCount==1){
                 sqlOrder = "ORDER BY "+groupBy+" desc";
             }
-            String sql = String.format("SELECT %s, count FROM (SELECT %s, COUNT(*) FROM attendance, employee WHERE attendance.employee_id = employee.employee_id" +
+            if (!countArg.equals("*")){
+                countArg = "distinct "+countArg;
+            }
+            String sql = String.format("SELECT %s, count FROM (SELECT %s, COUNT(%s) FROM attendance, employee WHERE attendance.employee_id = employee.employee_id" +
                             " %s %s %s %s %s GROUP BY %s ) AS %s_count(%s,count) ORDER BY %s",
-                    groupBy, groupBy, sqlEmployeeID, sqlDepartmentID, sqlDayBegin, sqlDayEnd, sqlStatus, groupBy,
+                    groupBy, groupBy, countArg, sqlEmployeeID, sqlDepartmentID, sqlDayBegin, sqlDayEnd, sqlStatus, groupBy,
                     groupBy, groupBy, sqlOrder);
             ResultSet resultSet = DBUtils.executeSql(sql);
             System.out.println("--------------attendance_info---------------");
