@@ -265,17 +265,21 @@ public class Manager extends User {
         }
         return 0;
     }
-    public int queryLeave(int ID, int departID, String dateBegin, String dateEnd,int status,
+    public int queryLeave(int ID, int departID, String dateBegin, String dateEnd,int status,int leaveType,
                                String order, String groupBy, String countArg, int oderByCount) throws Exception {
         String sqlDayBegin = "";
         String sqlDayEnd = "";
         String sqlEmployeeID = "";
         String sqlDepartmentID = "";
+        String sqlLeaveType = "";
         String sqlStatus = "";
         String sqlOrder = "";
         if (!dateBegin.equals("")&&!dateEnd.equals("")) {
             sqlDayBegin = "AND begin <= \'" + dateEnd + "\'";
-            sqlDayEnd = "AND begin >= \'" + dateBegin + "\'";
+            sqlDayEnd = "OR end >= \'" + dateBegin + "\'";
+        }
+        if (leaveType!=-1){
+            sqlLeaveType = "AND leave_type = "+leaveType;
         }
         if (ID!=-1)
             sqlEmployeeID = "AND leave_info.employee_id = "+ID;
@@ -287,6 +291,10 @@ public class Manager extends User {
         if (!order.equals(""))
             sqlOrder = "ORDER BY "+order;
         if (!groupBy.equals("")) {
+            if (!dateBegin.equals("")&&!dateEnd.equals("")) {
+                sqlDayEnd = "AND end <= \'" + dateEnd + "\'";
+                sqlDayBegin = "AND begin >= \'" + dateBegin + "\'";
+            }
             if (oderByCount==0){
                 sqlOrder = "ORDER  BY "+groupBy+" asc";
             }else if (oderByCount==1){
@@ -295,8 +303,8 @@ public class Manager extends User {
             if (!countArg.equals("*")){
                 countArg = "distinct "+countArg;
             }
-            String sql = String.format("SELECT %s, count FROM (SELECT %s, COUNT(%s) FROM attendance, employee WHERE " +
-                            "attendance.employee_id = employee.employee_id" +
+            String sql = String.format("SELECT %s, count FROM (SELECT %s, COUNT(%s) FROM leave_info, employee WHERE " +
+                            "leave_info.employee_id = employee.employee_id" +
                             " %s %s %s %s %s GROUP BY %s ) AS %s_count(%s,count) ORDER BY %s",
                     groupBy, groupBy, countArg, sqlEmployeeID, sqlDepartmentID, sqlDayBegin, sqlDayEnd, sqlStatus, groupBy,
                     groupBy, groupBy, sqlOrder);
@@ -308,7 +316,7 @@ public class Manager extends User {
             }
             return 0;
         }
-        String sql = String.format("SELECT * FROM attendance, employee WHERE attendance.employee_id = employee.employee_id" +
+        String sql = String.format("SELECT * FROM leave_info, employee WHERE leave_info.employee_id = employee.employee_id" +
                         " %s %s %s %s %s %s ",
                 sqlEmployeeID, sqlDepartmentID, sqlDayBegin, sqlDayEnd, sqlStatus, sqlOrder);
         ResultSet resultSet = DBUtils.executeSql(sql);
