@@ -14,6 +14,8 @@ import java.sql.ResultSet;
  */
 public class User {
     public enum AttendanceStatus{normal,late,early_quit,absent,leave,trip,other}
+    public enum LeaveType{sick, personal, maternity, wedding}
+    public enum Trip{company, personal}
     public enum Status{waiting, permitted, rejected}
     public enum TYPE {EMPLOYEE,HR,MANAGER,ADMIN}
     protected int employeeId;

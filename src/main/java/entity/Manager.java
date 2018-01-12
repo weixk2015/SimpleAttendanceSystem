@@ -199,7 +199,7 @@ public class Manager extends User {
         }
     }
     public void dumpAttendance(ResultSet resultSet) throws Exception {
-        System.out.printf("%-8d %-8s %-8d %-8s %-10s %-15s %8s",
+        System.out.printf("%-8d %-8s %-8d %-8s %-10s %-15s %-8s",
                 resultSet.getInt("employee_id"),
                 getEmoployeeName(resultSet.getInt("employee_id")),
                 resultSet.getInt("department_id"),
@@ -208,6 +208,38 @@ public class Manager extends User {
                 AttendanceStatus.values()[resultSet.getInt("status")]);
     }
     public void dumpGroupAttendance(ResultSet resultSet,String group) throws Exception {
+        System.out.printf("%-8s %-8s",
+                resultSet.getString(group),
+                resultSet.getString("count"));
+    }
+    public void dumpLeave(ResultSet resultSet) throws Exception {
+        System.out.printf("%-8d %-8s %-8d %-8s %-10s %-15s %-8s %-15s %-15s",
+                resultSet.getInt("employee_id"),
+                getEmoployeeName(resultSet.getInt("employee_id")),
+                resultSet.getInt("department_id"),
+                resultSet.getString("begin"), resultSet.getString("end"),
+                LeaveType.values()[resultSet.getInt("leave_type")],
+                Status.values()[resultSet.getInt("status")],
+                resultSet.getString("reason"),
+                resultSet.getString("reject_reason"));
+    }
+    public void dumpGroupLeave(ResultSet resultSet,String group) throws Exception {
+        System.out.printf("%-8s %8s",
+                resultSet.getString(group),
+                resultSet.getString("count"));
+    }
+    public void dumpTrip(ResultSet resultSet) throws Exception {
+        System.out.printf("%-8d %-8s %-8d %-8s %-10s %-15s %-8s %-15s %-15s",
+                resultSet.getInt("employee_id"),
+                getEmoployeeName(resultSet.getInt("employee_id")),
+                resultSet.getInt("department_id"),
+                resultSet.getString("begin"), resultSet.getString("end"),
+                LeaveType.values()[resultSet.getInt("trip_type")],
+                Status.values()[resultSet.getInt("status")],
+                resultSet.getString("business"),
+                resultSet.getString("reject_reason"));
+    }
+    public void dumpGroupTrip(ResultSet resultSet,String group) throws Exception {
         System.out.printf("%-8s %8s",
                 resultSet.getString(group),
                 resultSet.getString("count"));
@@ -240,7 +272,7 @@ public class Manager extends User {
                 sqlOrder = "ORDER BY "+groupBy+" desc";
             }
             if (!countArg.equals("*")){
-                countArg = "distinct "+countArg;
+                countArg = "DISTINCT "+countArg;
             }
             String sql = String.format("SELECT %s, count FROM (SELECT %s, COUNT(%s) FROM attendance, employee WHERE attendance.employee_id = employee.employee_id" +
                             " %s %s %s %s %s GROUP BY %s ) AS %s_count(%s,count) ORDER BY %s",
@@ -266,7 +298,7 @@ public class Manager extends User {
         return 0;
     }
     public int queryLeave(int ID, int departID, String dateBegin, String dateEnd,int status,int leaveType,
-                               String order, String groupBy, String countArg, int oderByCount) throws Exception {
+                               String order, String groupBy, String agFunc, int oderByCount) throws Exception {
         String sqlDayBegin = "";
         String sqlDayEnd = "";
         String sqlEmployeeID = "";
@@ -300,30 +332,86 @@ public class Manager extends User {
             }else if (oderByCount==1){
                 sqlOrder = "ORDER BY "+groupBy+" desc";
             }
-            if (!countArg.equals("*")){
-                countArg = "distinct "+countArg;
-            }
-            String sql = String.format("SELECT %s, count FROM (SELECT %s, COUNT(%s) FROM leave_info, employee WHERE " +
-                            "leave_info.employee_id = employee.employee_id" +
-                            " %s %s %s %s %s GROUP BY %s ) AS %s_count(%s,count) ORDER BY %s",
-                    groupBy, groupBy, countArg, sqlEmployeeID, sqlDepartmentID, sqlDayBegin, sqlDayEnd, sqlStatus, groupBy,
-                    groupBy, groupBy, sqlOrder);
+            String sql = String.format("SELECT %s, count FROM (SELECT %s, %s FROM (SELECT %s, leave_info.employee_id, end-begin " +
+                            "FROM leave_info, employee WHERE leave_info.employee_id = employee.employee_id" +
+                            " %s %s %s %s %s %s ) AS days(%s, employee_id, day) GROUP BY %s ) AS %s_count(%s,count) ORDER BY %s",
+                    groupBy, groupBy, agFunc, groupBy, sqlEmployeeID, sqlDepartmentID, sqlLeaveType, sqlDayBegin, sqlDayEnd, sqlStatus,
+                    groupBy, groupBy, groupBy, groupBy, sqlOrder);
             ResultSet resultSet = DBUtils.executeSql(sql);
-            System.out.println("--------------attendance_info---------------");
+            System.out.println("--------------leave_info---------------");
             System.out.printf("%s        count\n",groupBy);
             while(resultSet.next()) {
-                dumpGroupAttendance(resultSet, groupBy);
+                dumpGroupLeave(resultSet, groupBy);
             }
             return 0;
         }
         String sql = String.format("SELECT * FROM leave_info, employee WHERE leave_info.employee_id = employee.employee_id" +
-                        " %s %s %s %s %s %s ",
-                sqlEmployeeID, sqlDepartmentID, sqlDayBegin, sqlDayEnd, sqlStatus, sqlOrder);
+                        " %s %s %s %s %s %s %s",
+                sqlEmployeeID, sqlDepartmentID, sqlLeaveType, sqlDayBegin, sqlDayEnd, sqlStatus, sqlOrder);
         ResultSet resultSet = DBUtils.executeSql(sql);
-        System.out.println("--------------attendance_info---------------");
-        System.out.println("employee_id employee_name  department_id  date  sign_in  sign_off  status");
+        System.out.println("--------------leave_info---------------");
+        System.out.println("employee_id employee_name  department_id  begin end leave_type status           reason          reject_reason");
         while(resultSet.next()) {
-            dumpAttendance(resultSet);
+            dumpLeave(resultSet);
+        }
+        return 0;
+    }
+    public int queryTrip(int ID, int departID, String dateBegin, String dateEnd,int status,int TripType,
+                          String order, String groupBy, String agFunc, int oderByCount) throws Exception {
+        String sqlDayBegin = "";
+        String sqlDayEnd = "";
+        String sqlEmployeeID = "";
+        String sqlDepartmentID = "";
+        String sqlTripType = "";
+        String sqlStatus = "";
+        String sqlOrder = "";
+        if (!dateBegin.equals("")&&!dateEnd.equals("")) {
+            sqlDayBegin = "AND begin <= \'" + dateEnd + "\'";
+            sqlDayEnd = "OR end >= \'" + dateBegin + "\'";
+        }
+        if (TripType!=-1){
+            sqlTripType = "AND trip_type = "+TripType;
+        }
+        if (ID!=-1)
+            sqlEmployeeID = "AND trip.employee_id = "+ID;
+        if (departID!=-1)
+            sqlDepartmentID = "AND department_id = "+departID;
+        if (status!=-1)
+            sqlStatus = "AND status = "+status;
+
+        if (!order.equals(""))
+            sqlOrder = "ORDER BY "+order;
+        if (!groupBy.equals("")) {
+            if (!dateBegin.equals("")&&!dateEnd.equals("")) {
+                sqlDayEnd = "AND end <= \'" + dateEnd + "\'";
+                sqlDayBegin = "AND begin >= \'" + dateBegin + "\'";
+            }
+            if (oderByCount==0){
+                sqlOrder = "ORDER  BY "+groupBy+" asc";
+            }else if (oderByCount==1){
+                sqlOrder = "ORDER BY "+groupBy+" desc";
+            }
+            String sql = String.format("SELECT %s, count FROM (SELECT %s, %s FROM (SELECT %s, trip.employee_id, end-begin " +
+                            "FROM trip, employee WHERE trip.employee_id = employee.employee_id" +
+                            " %s %s %s %s %s %s ) AS days(%s, employee_id, day) GROUP BY %s ) AS %s_count(%s,count) ORDER BY %s",
+                    groupBy, groupBy, agFunc, groupBy, sqlEmployeeID, sqlDepartmentID, sqlTripType, sqlDayBegin, sqlDayEnd, sqlStatus,
+                    groupBy, groupBy, groupBy, groupBy, sqlOrder);
+            ResultSet resultSet = DBUtils.executeSql(sql);
+            System.out.println("--------------trip_info---------------");
+            System.out.printf("%s        count\n",groupBy);
+            while(resultSet.next()) {
+                dumpGroupTrip(resultSet, groupBy);
+            }
+            return 0;
+        }
+        String sql = String.format("SELECT * FROM trip, employee WHERE trip.employee_id = employee.employee_id" +
+                        " %s %s %s %s %s %s %s",
+                sqlEmployeeID, sqlDepartmentID, sqlTripType, sqlDayBegin, sqlDayEnd, sqlStatus, sqlOrder);
+        ResultSet resultSet = DBUtils.executeSql(sql);
+        System.out.println("--------------trip_info---------------");
+        System.out.println("employee_id employee_name  department_id  begin end Trip_type status           business          reject_reason");
+        while(resultSet.next()) {
+            dumpTrip(resultSet);
         }
         return 0;
     }
