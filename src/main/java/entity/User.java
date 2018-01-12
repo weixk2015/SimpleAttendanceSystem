@@ -111,4 +111,5 @@ public class User {
                 resultSet.getString("name"), resultSet.getString("password"), resultSet.getInt("age"));
         System.out.println(TYPE.values()[resultSet.getInt("type")]);
     }
+
 }
