@@ -415,6 +415,46 @@ public class Main {
         int status = Integer.parseInt(sc.nextLine());
         if(status < 0 || status > 5) status = -1;
 
+        String order = "";
+        System.out.println("Please input the property you want to order by(0 for default, \n" +
+                "1 for date, 2 for department, 3 for employee, 4 for status):");
+        int orderNum = Integer.parseInt(sc.nextLine());
+        switch (orderNum) {
+            case 0:
+                break;
+            case 1:
+                order = "date ";
+                break;
+            case 2:
+                order = "department_id ";
+                break;
+            case 3:
+                order = "employee_id ";
+                break;
+            case 4:
+                order = "status ";
+                break;
+            default:
+                System.out.println("No such choice!");
+                break;
+        }
+        if(orderNum >= 1 && orderNum <= 4) {
+            System.out.println("Please input(0 for ascending, 1 for descending): ");
+            int typeNum = Integer.parseInt(sc.nextLine());
+            switch (typeNum) {
+                case 0:
+                    order += "asc";
+                    break;
+                case 1:
+                    order += "desc";
+                    break;
+                default:
+                    System.out.println("No such choice!");
+                    break;
+            }
+        }
+
+
     }
 
     public static void queryManagerLeaveInfo() {
