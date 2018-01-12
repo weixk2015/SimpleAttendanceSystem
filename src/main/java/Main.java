@@ -16,6 +16,7 @@ import main.java.entity.User;
 public class Main {
     static String action[] = {"login", "logout", "query", "add", "modify", "delete", "trip", "leave", "checkin", "checkout"};
     static String attendanceStatus[] = {"normal", "late", "early_quit", "absent", "leave", "trip", "all"};
+    static String transactionStatus[] = {"waiting", "permitted", "rejected", "all"};
 
     static Controller controller = new Controller();
     static User user = null;
@@ -493,11 +494,261 @@ public class Main {
     }
 
     public static void queryManagerLeaveInfo() {
+        System.out.println("Please choose date condition: \n" +
+                "0.none\t1.single day\t2.a period");
+        int type = Integer.parseInt(sc.nextLine());
+        String begin = "", end = "";
+        switch (type) {
+            case 0:
+                break;
+            case 1:
+                System.out.println("Please input date(YYYY-mm-dd, eg, 2018-01-10): ");
+                begin = end = sc.nextLine();
+                break;
+            case 2:
+                System.out.println("Please input begin date(YYYY-mm-dd, eg, 2018-01-10): ");
+                begin = sc.nextLine();
+                System.out.println("Please input end date(YYYY-mm-dd, eg, 2018-01-10): ");
+                end = sc.nextLine();
+                break;
+            default:
+                System.out.println("No such choice!");
+                break;
+        }
+        System.out.println("Please choose a department id(-1 for all): ");
+        int departmentId = Integer.parseInt(sc.nextLine());
+        System.out.println("Please input a employee(id or name, none if not necessary): ");
+        int employeeId = 0;
+        String nameOrId = sc.nextLine();
+        if(!"none".equals(nameOrId)) {
+            try {
+                employeeId = Integer.parseInt(nameOrId);
+            } catch (Exception e) {
+                try {
+                    employeeId = ((Manager)user).getEmoployeeID(nameOrId);
+                } catch (Exception ex) {
+                    System.out.println("Employee is not exist!");
+                }
+            }
+        }
+        System.out.println("Please choose a status: ");
+        for(int i = 0; i < transactionStatus.length; i ++) {
+            System.out.println(i + "." + transactionStatus[i] + " ");
+        }
+        int status = Integer.parseInt(sc.nextLine());
+        if(status < 0 || status > 2) status = -1;
 
+        System.out.println("Please choose leave type: \n" +
+                "0.sick leave\t1.personal leave\t2.maternity leave\t3.wedding leave\t4.all\n");
+        int leaveType = Integer.parseInt(sc.nextLine());
+        if(leaveType < 0 || leaveType > 3) leaveType = -1;
+
+        String order = "";
+        System.out.println("Please input the property you want to order by(0 for default, \n" +
+                "1 for date, 2 for department, 3 for employee, 4 for status, 5 for leaveType):");
+        int orderNum = Integer.parseInt(sc.nextLine());
+        switch (orderNum) {
+            case 0:
+                break;
+            case 1:
+                order = "date ";
+                break;
+            case 2:
+                order = "department_id ";
+                break;
+            case 3:
+                order = "employee_id ";
+                break;
+            case 4:
+                order = "status ";
+                break;
+            case 5:
+                order = "leave_type ";
+            default:
+                System.out.println("No such choice!");
+                break;
+        }
+        if(orderNum >= 1 && orderNum <= 5) {
+            System.out.println("Please input(0 for ascending, 1 for descending): ");
+            int typeNum = Integer.parseInt(sc.nextLine());
+            switch (typeNum) {
+                case 0:
+                    order += "asc";
+                    break;
+                case 1:
+                    order += "desc";
+                    break;
+                default:
+                    System.out.println("No such choice!");
+                    break;
+            }
+        }
+        try {
+            ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, "", "", -1);
+        } catch (PermisionDeniedException e) {
+            System.out.println("Sorry, your permission is insufficient!");
+        } catch (Exception e) {
+            System.out.println("query failed!");
+        }
+        System.out.println("Do you want to quit this query?(yes, no): ");
+        if("yes".equals(sc.nextLine())) return;
+        System.out.println("Please choose the type you want to query \n" +
+                "1.number of days\t2.number of employee");
+        type = Integer.parseInt(sc.nextLine());
+        switch (type) {
+            case 1:
+                try {
+                    if(departmentId != -1) ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, "department_id", "sum(day)", -1);
+                    else ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, "employee_id", "sum(day)", -1);
+                } catch (PermisionDeniedException e) {
+                    System.out.println("Sorry, your permission is insufficient!");
+                } catch (Exception e) {
+                    System.out.println("query failed!");
+                }
+                break;
+            case 2:
+                try {
+                    if(departmentId != -1) ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, "department_id", "count(distinct employee_id)", -1);
+                    else ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, "employee_id", "count(distinct employee_id)", -1);
+                } catch (PermisionDeniedException e) {
+                    System.out.println("Sorry, your permission is insufficient!");
+                } catch (Exception e) {
+                    System.out.println("query failed!");
+                }
+                break;
+            default:
+                System.out.println("No such choice!");
+                break;
+        }
     }
 
     public static void queryManagerBusinessTrip() {
+        System.out.println("Please choose date condition: \n" +
+                "0.none\t1.single day\t2.a period");
+        int type = Integer.parseInt(sc.nextLine());
+        String begin = "", end = "";
+        switch (type) {
+            case 0:
+                break;
+            case 1:
+                System.out.println("Please input date(YYYY-mm-dd, eg, 2018-01-10): ");
+                begin = end = sc.nextLine();
+                break;
+            case 2:
+                System.out.println("Please input begin date(YYYY-mm-dd, eg, 2018-01-10): ");
+                begin = sc.nextLine();
+                System.out.println("Please input end date(YYYY-mm-dd, eg, 2018-01-10): ");
+                end = sc.nextLine();
+                break;
+            default:
+                System.out.println("No such choice!");
+                break;
+        }
+        System.out.println("Please choose a department id(-1 for all): ");
+        int departmentId = Integer.parseInt(sc.nextLine());
+        System.out.println("Please input a employee(id or name, none if not necessary): ");
+        int employeeId = 0;
+        String nameOrId = sc.nextLine();
+        if(!"none".equals(nameOrId)) {
+            try {
+                employeeId = Integer.parseInt(nameOrId);
+            } catch (Exception e) {
+                try {
+                    employeeId = ((Manager)user).getEmoployeeID(nameOrId);
+                } catch (Exception ex) {
+                    System.out.println("Employee is not exist!");
+                }
+            }
+        }
+        System.out.println("Please choose a status: ");
+        for(int i = 0; i < transactionStatus.length; i ++) {
+            System.out.println(i + "." + transactionStatus[i] + " ");
+        }
+        int status = Integer.parseInt(sc.nextLine());
+        if(status < 0 || status > 2) status = -1;
 
+        System.out.println("Please input trip type: \n" +
+                "0.company assigned\t1.personal application\t2.all");
+        int tripType = Integer.parseInt(sc.nextLine());
+        if(tripType < 0 || tripType > 1) tripType = -1;
+
+        String order = "";
+        System.out.println("Please input the property you want to order by(0 for default, \n" +
+                "1 for date, 2 for department, 3 for employee, 4 for status, 5 for tripType):");
+        int orderNum = Integer.parseInt(sc.nextLine());
+        switch (orderNum) {
+            case 0:
+                break;
+            case 1:
+                order = "date ";
+                break;
+            case 2:
+                order = "department_id ";
+                break;
+            case 3:
+                order = "employee_id ";
+                break;
+            case 4:
+                order = "status ";
+                break;
+            case 5:
+                order = "trip_type ";
+            default:
+                System.out.println("No such choice!");
+                break;
+        }
+        if(orderNum >= 1 && orderNum <= 5) {
+            System.out.println("Please input(0 for ascending, 1 for descending): ");
+            int typeNum = Integer.parseInt(sc.nextLine());
+            switch (typeNum) {
+                case 0:
+                    order += "asc";
+                    break;
+                case 1:
+                    order += "desc";
+                    break;
+                default:
+                    System.out.println("No such choice!");
+                    break;
+            }
+        }
+        try {
+            ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, "", "", -1);
+        } catch (PermisionDeniedException e) {
+            System.out.println("Sorry, your permission is insufficient!");
+        } catch (Exception e) {
+            System.out.println("query failed!");
+        }
+        System.out.println("Do you want to quit this query?(yes, no): ");
+        if("yes".equals(sc.nextLine())) return;
+        System.out.println("Please choose the type you want to query \n" +
+                "1.number of days\t2.number of employee");
+        type = Integer.parseInt(sc.nextLine());
+        switch (type) {
+            case 1:
+                try {
+                    if(departmentId != -1) ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, "department_id", "sum(day)", -1);
+                    else ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, "employee_id", "sum(day)", -1);
+                } catch (PermisionDeniedException e) {
+                    System.out.println("Sorry, your permission is insufficient!");
+                } catch (Exception e) {
+                    System.out.println("query failed!");
+                }
+                break;
+            case 2:
+                try {
+                    if(departmentId != -1) ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, "department_id", "count(distinct employee_id)", -1);
+                    else ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, "employee_id", "count(distinct employee_id)", -1);
+                } catch (PermisionDeniedException e) {
+                    System.out.println("Sorry, your permission is insufficient!");
+                } catch (Exception e) {
+                    System.out.println("query failed!");
+                }
+                break;
+            default:
+                System.out.println("No such choice!");
+                break;
+        }
     }
 
     public static void delete() {
@@ -542,7 +793,7 @@ public class Main {
         System.out.println("Please input your business trip reason: ");
         String reason = sc.nextLine();
         try {
-            ((Employee)user).askTrip(begin, end, type, reason);
+            ((Employee)user).askTrip(begin, end, type - 1, reason);
             System.out.println("apply successfully!");
         } catch (Exception e) {
             System.out.println("apply failed!");
@@ -617,7 +868,7 @@ public class Main {
         System.out.println("Please input your leave reason: ");
         String reason = sc.nextLine();
         try {
-            ((Employee)user).askLeave(begin, end, type, reason);
+            ((Employee)user).askLeave(begin, end, type - 1, reason);
             System.out.println("apply successfully!");
         } catch (Exception e) {
             System.out.println("apply failed!");
