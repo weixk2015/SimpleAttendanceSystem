@@ -15,6 +15,7 @@ import main.java.entity.User;
  */
 public class Main {
     static String action[] = {"login", "logout", "query", "add", "modify", "delete", "trip", "leave", "checkin", "checkout"};
+    static String attendanceStatus[] = {"normal", "late", "early_quit", "absent", "leave", "trip", "all"};
 
     static Controller controller = new Controller();
     static User user = null;
@@ -393,13 +394,27 @@ public class Main {
         }
         System.out.println("Please choose a department id(-1 for all): ");
         int departmentId = Integer.parseInt(sc.nextLine());
-        System.out.println("Please input a employee(id or name): ");
+        System.out.println("Please input a employee(id or name, none if not necessary): ");
         int employeeId = 0;
-        try {
-            employeeId = Integer.parseInt(sc.nextLine());
-        } catch (Exception e) {
-            employeeId = ((Manager)user).
+        String nameOrId = sc.nextLine();
+        if(!"none".equals(nameOrId)) {
+            try {
+                employeeId = Integer.parseInt(nameOrId);
+            } catch (Exception e) {
+                try {
+                    employeeId = ((Manager)user).getEmoployeeID(nameOrId);
+                } catch (Exception ex) {
+                    System.out.println("Employee is not exist!");
+                }
+            }
         }
+        System.out.println("Please choose a status: ");
+        for(int i = 0; i < attendanceStatus.length; i ++) {
+            System.out.println(i + "." + attendanceStatus[i] + " ");
+        }
+        int status = Integer.parseInt(sc.nextLine());
+        if(status < 0 || status > 5) status = -1;
+
     }
 
     public static void queryManagerLeaveInfo() {
