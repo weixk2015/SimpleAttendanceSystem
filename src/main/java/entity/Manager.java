@@ -207,9 +207,13 @@ public class Manager extends User {
                 resultSet.getString("sign_off_time"),
                 AttendanceStatus.values()[resultSet.getInt("status")]);
     }
+    public void dumpGroupAttendance(ResultSet resultSet,String group) throws Exception {
+        System.out.printf("%-8s %8s",
+                resultSet.getString(group),
+                resultSet.getString("count"));
+    }
     public int queryAttendance(int ID, int departID, String dateBegin, String dateEnd,int status,
-                               String order, String groupBy, int oderByGroup) throws Exception {
-
+                               String order, String groupBy, int oderByCount) throws Exception {
         String sqlDayBegin = "";
         String sqlDayEnd = "";
         String sqlEmployeeID = "";
@@ -221,7 +225,7 @@ public class Manager extends User {
         if (!dateEnd.equals(""))
             sqlDayEnd = "AND date <= \'"+dateEnd+"\'";
         if (ID!=-1)
-            sqlEmployeeID = "AND employee_id = "+ID;
+            sqlEmployeeID = "AND attendance.employee_id = "+ID;
         if (departID!=-1)
             sqlDepartmentID = "AND department_id = "+departID;
         if (status!=-1)
@@ -229,6 +233,24 @@ public class Manager extends User {
 
         if (!order.equals(""))
             sqlOrder = "ORDER BY "+order;
+        if (!groupBy.equals("")){
+            if (oderByCount==0){
+                sqlOrder = "ORDER BY "+groupBy+" asc";
+            }else if (oderByCount==1){
+                sqlOrder = "ORDER BY "+groupBy+" desc";
+            }
+            String sql = String.format("SELECT %s, count FROM (SELECT %s, COUNT(*) FROM attendance, employee WHERE attendance.employee_id = employee.employee_id" +
+                            " %s %s %s %s %s GROUP BY %s ) AS %s_count(%s,count) ORDER BY %s",
+                    groupBy, groupBy, sqlEmployeeID, sqlDepartmentID, sqlDayBegin, sqlDayEnd, sqlStatus, groupBy,
+                    groupBy, groupBy, sqlOrder);
+            ResultSet resultSet = DBUtils.executeSql(sql);
+            System.out.println("--------------attendance_info---------------");
+            System.out.printf("%s        count\n",groupBy);
+            while(resultSet.next()) {
+                dumpGroupAttendance(resultSet, groupBy);
+            }
+            return 0;
+        }
         String sql = String.format("SELECT * FROM attendance, employee WHERE attendance.employee_id = employee.employee_id" +
                         " %s %s %s %s %s %s ",
                 sqlEmployeeID, sqlDepartmentID, sqlDayBegin, sqlDayEnd, sqlStatus, sqlOrder);
