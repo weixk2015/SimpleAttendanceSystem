@@ -454,7 +454,7 @@ public class Main {
             }
         }
         try {
-            ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "", -1);
+            ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "", "", -1);
         } catch (PermisionDeniedException e) {
             System.out.println("Sorry, your permission is insufficient!");
         } catch (Exception e) {
@@ -467,10 +467,24 @@ public class Main {
         type = Integer.parseInt(sc.nextLine());
         switch (type) {
             case 1:
-                
+                try {
+                    if(departmentId != -1) ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "department_id", "*", -1);
+                    else ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "employee_id", "*", -1);
+                } catch (PermisionDeniedException e) {
+                    System.out.println("Sorry, your permission is insufficient!");
+                } catch (Exception e) {
+                    System.out.println("query failed!");
+                }
                 break;
             case 2:
-
+                try {
+                    if(departmentId != -1) ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "department_id", "employee_id", -1);
+                    else ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "employee_id", "employee_id", -1);
+                } catch (PermisionDeniedException e) {
+                    System.out.println("Sorry, your permission is insufficient!");
+                } catch (Exception e) {
+                    System.out.println("query failed!");
+                }
                 break;
             default:
                 System.out.println("No such choice!");
