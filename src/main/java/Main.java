@@ -139,8 +139,7 @@ public class Main {
 
     public static void modifyManager() {
         System.out.println("Please choose what you want to modify: " +
-                "1.self info\t2.new employee\t3.modify employee\n" +
-                "4.new department\t5.modify department");
+                "1.self info\t2.modify employee\t3.modify department\n");
         int type = Integer.parseInt(sc.nextLine());
         switch (type) {
             case 1:
@@ -280,7 +279,17 @@ public class Main {
     }
 
     public static void queryEmployeeAttendance() {
-
+        System.out.println("Please input begin date(YYYY-mm-dd, eg, 2018-01-10, or null, if not necessary): ");
+        String begin = sc.nextLine();
+        if("null".equals(begin)) begin = "";
+        System.out.println("Please input end date(YYYY-mm-dd, eg, 2018-01-11, or null, if not necessary): ");
+        String end = sc.nextLine();
+        if("null".equals(end)) end = "";
+        try {
+            ((Employee)user).queryAttendance(begin, end);
+        } catch (Exception e) {
+            System.out.println("query failed!");
+        }
     }
 
     public static void queryEmployeeLeaveInfo() {
@@ -361,7 +370,36 @@ public class Main {
     }
 
     public static void queryManagerAttendance() {
-
+        System.out.println("Please choose date condition: \n" +
+                "0.none\t1.single day\t2.a period");
+        int type = Integer.parseInt(sc.nextLine());
+        String begin = "", end = "";
+        switch (type) {
+            case 0:
+                break;
+            case 1:
+                System.out.println("Please input date(YYYY-mm-dd, eg, 2018-01-10): ");
+                begin = end = sc.nextLine();
+                break;
+            case 2:
+                System.out.println("Please input begin date(YYYY-mm-dd, eg, 2018-01-10): ");
+                begin = sc.nextLine();
+                System.out.println("Please input end date(YYYY-mm-dd, eg, 2018-01-10): ");
+                end = sc.nextLine();
+                break;
+            default:
+                System.out.println("No such choice!");
+                break;
+        }
+        System.out.println("Please choose a department id(-1 for all): ");
+        int departmentId = Integer.parseInt(sc.nextLine());
+        System.out.println("Please input a employee(id or name): ");
+        int employeeId = 0;
+        try {
+            employeeId = Integer.parseInt(sc.nextLine());
+        } catch (Exception e) {
+            employeeId = ((Manager)user).
+        }
     }
 
     public static void queryManagerLeaveInfo() {
