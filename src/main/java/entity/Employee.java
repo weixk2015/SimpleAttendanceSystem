@@ -165,6 +165,27 @@ public class Employee extends User {
         }
         return 0;
     }
+    public int queryAttendance(String dateBegin, String dateEnd) throws Exception {
+
+        String sqlDayBegin;
+        String sqlDayEnd;
+
+        sqlDayBegin = "AND date >= \'"+dateBegin+"\'";
+        sqlDayEnd = "AND date <= \'"+dateEnd+"\'";
+        if (dateBegin.equals(""))
+            sqlDayBegin = "";
+        if (dateEnd.equals(""))
+            sqlDayEnd = "";
+        String sql = String.format("SELECT * FROM attendance WHERE employee_id = %d %s %s ORDER BY date",
+                employeeId, sqlDayBegin, sqlDayEnd);
+        ResultSet resultSet = DBUtils.executeSql(sql);
+        System.out.println("--------------attendance_info---------------");
+        System.out.println("date       sign_in      sign_off       status");
+        while(resultSet.next()) {
+            dumpAttendance(resultSet);
+        }
+        return 0;
+    }
     public void dumpLeaveInfo(ResultSet resultSet) throws SQLException {
         System.out.printf("%-8d %-10s %-15s %8s %8s %8s %8s", resultSet.getInt("apply_id"),
                 resultSet.getString("begin"), resultSet.getString("end"),
@@ -180,6 +201,12 @@ public class Employee extends User {
                 resultSet.getString("reject_reason"),
                 resultSet.getInt("trip_type"),
                 resultSet.getString("business"));
+    }
+    public void dumpAttendance(ResultSet resultSet) throws SQLException {
+        System.out.printf("%-8s %-10s %-15s %8s",
+                resultSet.getString("date"), resultSet.getString("sign_in_time"),
+                resultSet.getString("sign_off_time"),
+                AttendanceStatus.values()[resultSet.getInt("status")]);
     }
 
 }

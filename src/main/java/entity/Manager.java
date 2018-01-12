@@ -2,6 +2,7 @@ package main.java.entity;/*
  * Created by xk on 2018/1/9 19.
  */
 
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import main.java.Exception.DuplicateException;
 import main.java.Exception.NoSuchUserException;
 import main.java.Exception.PermisionDeniedException;
@@ -128,7 +129,15 @@ public class Manager extends User {
         }
         return -1;
     }
+    public int getEmoployeeID(String userName) throws Exception {
+        String sql = String.format("SELECT employee_id FROM user WHERE name = \'%s\'",userName);
+        ResultSet resultSet = DBUtils.executeSql(sql);
 
+        if (resultSet.next()) {
+            return resultSet.getInt("employee_id");
+        }
+        return -1;
+    }
 
     public void dumpDepartment(ResultSet resultSet) throws Exception {
         int id= resultSet.getInt("manager_id");
@@ -180,5 +189,45 @@ public class Manager extends User {
         } catch (Exception e) {
             return false;
         }
+    }
+    public void dumpAttendance(ResultSet resultSet) throws SQLException {
+        System.out.printf("%-8d %-8s %-10s %-15s %8s",
+                resultSet.getInt("employee_id"),
+
+                resultSet.getString("date"), resultSet.getString("sign_in_time"),
+                resultSet.getString("sign_off_time"),
+                AttendanceStatus.values()[resultSet.getInt("status")]);
+    }
+    public int queryAttendance(int ID, int departID, String dateBegin, String dateEnd,int status,
+                               String order, String groupBy, String countBy, int oderByGroup) throws Exception {
+
+        String sqlDayBegin = "";
+        String sqlDayEnd = "";
+        String sqlEmployeeID = "";
+        String sqlDepartmentID = "";
+        String sqlStatus = "";
+        String sqlOrder = "";
+        if (!dateBegin.equals(""))
+            sqlDayBegin = "AND date >= \'"+dateBegin+"\'";
+        if (!dateEnd.equals(""))
+            sqlDayEnd = "AND date <= \'"+dateEnd+"\'";
+        if (ID!=-1)
+            sqlEmployeeID = "AND employee_id = "+ID;
+        if (departID!=-1)
+            sqlDepartmentID = "AND department_id = "+departID;
+        if (status!=-1)
+            sqlStatus = "AND status = "+status;
+        if (!order.equals(""))
+            sqlOrder = "ORDER BY "+order;
+        String sql = String.format("SELECT * FROM attendance, employee WHERE attendance.employee_id = employee.employee_id" +
+                        " %s %s %s %s %s %s ",
+                sqlEmployeeID, sqlDepartmentID, sqlDayBegin, sqlDayEnd, sqlStatus, sqlOrder);
+        ResultSet resultSet = DBUtils.executeSql(sql);
+        System.out.println("--------------attendance_info---------------");
+        System.out.println("employee_id employee_name  department_id  date  sign_in  sign_off  status");
+        while(resultSet.next()) {
+            dumpAttendance(resultSet);
+        }
+        return 0;
     }
 }
