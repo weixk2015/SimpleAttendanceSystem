@@ -208,7 +208,7 @@ public class Manager extends User {
                 AttendanceStatus.values()[resultSet.getInt("status")]);
     }
     public void dumpGroupAttendance(ResultSet resultSet,String group) throws Exception {
-        System.out.printf("%-8s %-8s",
+        System.out.printf("%-8s %-8s\n",
                 resultSet.getString(group),
                 resultSet.getString("count"));
     }
@@ -224,7 +224,7 @@ public class Manager extends User {
                 resultSet.getString("reject_reason"));
     }
     public void dumpGroupLeave(ResultSet resultSet,String group) throws Exception {
-        System.out.printf("%-8s %8s",
+        System.out.printf("%-8s %8s\n",
                 resultSet.getString(group),
                 resultSet.getString("count"));
     }
