@@ -86,9 +86,10 @@ public class SystemManager extends Manager {
             dumpUserInfo(resultSet);
         }
     }
-    public void setAttendanceStatus(int ID, String date, int status){
+    public void setAttendanceStatus(int ID, String date, int status) throws Exception {
         String sql =  String.format("UPDATE attendance SET status = %d" +
                 " WHERE employee_id = %d AND date = \'%s\'", status, ID, date);
+        DBUtils.executeUpdate(sql);
     }
     public void setOfficeHour(String begin, String end) throws Exception {
         String sql = String.format("Update config SET office_begin = \'%s\' AND office_end = \'%s\'",begin,end);
