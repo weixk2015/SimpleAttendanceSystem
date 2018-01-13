@@ -34,11 +34,11 @@ public class HRmanager extends Manager {
     public void queryEmployeeByName(String name) throws Exception {
         String sql = String.format("SELECT * FROM user WHERE name = \'%s\'",name );
         ResultSet resultSet = DBUtils.executeSql(sql);
-        int type = resultSet.getInt("type");
-        if (type==1||type==3)
-            throw new PermisionDeniedException();
         System.out.println("id       name        age      type");
         while(resultSet.next()) {
+            int type = resultSet.getInt("type");
+            if (type==1||type==3)
+                throw new PermisionDeniedException();
             dumpUserInfo(resultSet);
         }
     }
