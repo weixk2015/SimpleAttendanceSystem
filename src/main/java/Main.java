@@ -923,7 +923,7 @@ public class Main {
 
     public static void tripDepartmentManager() {
         try {
-            ((DepartmentManager)user).checkApply();
+            ((DepartmentManager)user).checkTripApply();
             while(true) {
                 System.out.println("Please select an apply id(type -1 to quit): ");
                 int applyId = Integer.parseInt(sc.nextLine());
@@ -979,7 +979,7 @@ public class Main {
 
     public static void leaveDepartmentManager() {
         try {
-            ((DepartmentManager)user).checkApply();
+            ((DepartmentManager)user).checkLeaveApply();
             while(true) {
                 System.out.println("Please select an apply id(type -1 to quit): ");
                 int applyId = Integer.parseInt(sc.nextLine());
