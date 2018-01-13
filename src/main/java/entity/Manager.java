@@ -241,7 +241,7 @@ public class Manager extends User {
                 resultSet.getString("reject_reason"));
     }
     public void dumpGroupTrip(ResultSet resultSet,String group) throws Exception {
-        System.out.printf("%-8s %8s",
+        System.out.printf("%-8s %8s\n",
                 resultSet.getString(group),
                 resultSet.getString("count"));
     }
@@ -336,10 +336,14 @@ public class Manager extends User {
             }else if (oderByCount==1){
                 sqlOrder = "ORDER BY count desc";
             }
-            String sql = String.format("SELECT %s, %s AS count FROM (SELECT employee.%s, end-begin+1 AS day" +
+            String bugFixSql = "";
+            if (!groupBy.equals("employee_id")){
+                bugFixSql = "employee.employee_id, ";
+            }
+            String sql = String.format("SELECT %s, %s AS count FROM (SELECT employee.%s, %s, end-begin+1 AS day" +
                             " FROM leave_info, employee WHERE leave_info.employee_id = employee.employee_id" +
                             " %s %s %s %s %s %s ) AS sum  GROUP BY %s  %s",
-                    groupBy, agFunc, groupBy, sqlEmployeeID, sqlDepartmentID, sqlLeaveType, sqlDayBegin, sqlDayEnd, sqlStatus,
+                    groupBy, agFunc, groupBy, bugFixSql, sqlEmployeeID, sqlDepartmentID, sqlLeaveType, sqlDayBegin, sqlDayEnd, sqlStatus,
                     groupBy, sqlOrder);
             ResultSet resultSet = DBUtils.executeSql(sql);
             System.out.println("--------------leave_info---------------");
@@ -395,10 +399,14 @@ public class Manager extends User {
             }else if (oderByCount==1){
                 sqlOrder = "ORDER BY count desc";
             }
-            String sql = String.format("SELECT %s, %s AS count FROM (SELECT employee.%s, end-begin+1 AS day" +
+            String bugFixSql = "";
+            if (!groupBy.equals("employee_id")){
+                bugFixSql = "employee.employee_id, ";
+            }
+            String sql = String.format("SELECT %s, %s AS count FROM (SELECT employee.%s, %s end-begin+1 AS day" +
                             " FROM trip, employee WHERE trip.employee_id = employee.employee_id" +
                             " %s %s %s %s %s %s ) AS sum GROUP BY %s  %s",
-                    groupBy, agFunc, groupBy, sqlEmployeeID, sqlDepartmentID, sqlTripType, sqlDayBegin, sqlDayEnd, sqlStatus,
+                    groupBy, agFunc, groupBy, bugFixSql, sqlEmployeeID, sqlDepartmentID, sqlTripType, sqlDayBegin, sqlDayEnd, sqlStatus,
                     groupBy, sqlOrder);
             ResultSet resultSet = DBUtils.executeSql(sql);
             System.out.println("--------------trip_info---------------");
