@@ -21,7 +21,7 @@ public class AttendanceExaminer {
         }
         SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD");
         Date date = new Date();
-        String sql = String.format("SELECT * FROM holidays  " +
+        String sql = String.format("SELECT * FROM holiday  " +
                 "WHERE day = \'%s\'",sdf.format(date));
         // System.out.println(sql);
         ResultSet resultSet = null;
