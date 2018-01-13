@@ -199,7 +199,7 @@ public class Manager extends User {
         }
     }
     public void dumpAttendance(ResultSet resultSet) throws Exception {
-        System.out.printf("%-8d %-8s %-8d %-8s %-10s %-15s %-8s",
+        System.out.printf("%-8d %-8s %-8d %-8s %-10s %-15s %-8s\n",
                 resultSet.getInt("employee_id"),
                 getEmoployeeName(resultSet.getInt("employee_id")),
                 resultSet.getInt("department_id"),
@@ -213,7 +213,7 @@ public class Manager extends User {
                 resultSet.getString("count"));
     }
     public void dumpLeave(ResultSet resultSet) throws Exception {
-        System.out.printf("%-8d %-8s %-8d %-8s %-10s %-15s %-8s %-15s %-15s",
+        System.out.printf("%-8d %-8s %-8d %-8s %-10s %-15s %-8s %-15s %-15s\n",
                 resultSet.getInt("employee_id"),
                 getEmoployeeName(resultSet.getInt("employee_id")),
                 resultSet.getInt("department_id"),
@@ -229,7 +229,7 @@ public class Manager extends User {
                 resultSet.getString("count"));
     }
     public void dumpTrip(ResultSet resultSet) throws Exception {
-        System.out.printf("%-8d %-8s %-8d %-8s %-10s %-15s %-8s %-15s %-15s",
+        System.out.printf("%-8d %-8s %-8d %-8s %-10s %-15s %-8s %-15s %-15s\n",
                 resultSet.getInt("employee_id"),
                 getEmoployeeName(resultSet.getInt("employee_id")),
                 resultSet.getInt("department_id"),
@@ -274,10 +274,9 @@ public class Manager extends User {
             if (!countArg.equals("*")){
                 countArg = "DISTINCT "+countArg;
             }
-            String sql = String.format("SELECT %s, count FROM (SELECT %s, COUNT(%s) FROM attendance, employee WHERE attendance.employee_id = employee.employee_id" +
-                            " %s %s %s %s %s GROUP BY %s ) AS %s_count(%s,count) ORDER BY %s",
-                    groupBy, groupBy, countArg, sqlEmployeeID, sqlDepartmentID, sqlDayBegin, sqlDayEnd, sqlStatus, groupBy,
-                    groupBy, groupBy, sqlOrder);
+            String sql = String.format("SELECT %s, COUNT(%s) AS count FROM attendance, employee WHERE attendance.employee_id = employee.employee_id" +
+                            " %s %s %s %s %s GROUP BY %s  %s",
+                    groupBy, countArg, sqlEmployeeID, sqlDepartmentID, sqlDayBegin, sqlDayEnd, sqlStatus, groupBy, sqlOrder);
             ResultSet resultSet = DBUtils.executeSql(sql);
             System.out.println("--------------attendance_info---------------");
             System.out.printf("%s        count\n",groupBy);
@@ -289,6 +288,7 @@ public class Manager extends User {
         String sql = String.format("SELECT * FROM attendance, employee WHERE attendance.employee_id = employee.employee_id" +
                         " %s %s %s %s %s %s ",
                 sqlEmployeeID, sqlDepartmentID, sqlDayBegin, sqlDayEnd, sqlStatus, sqlOrder);
+        System.out.println(sql);
         ResultSet resultSet = DBUtils.executeSql(sql);
         System.out.println("--------------attendance_info---------------");
         System.out.println("employee_id employee_name  department_id  date  sign_in  sign_off  status");
@@ -332,11 +332,11 @@ public class Manager extends User {
             }else if (oderByCount==1){
                 sqlOrder = "ORDER BY "+groupBy+" desc";
             }
-            String sql = String.format("SELECT %s, count FROM (SELECT %s, %s FROM (SELECT %s, leave_info.employee_id, end-begin " +
+            String sql = String.format("SELECT %s, %s AS count FROM (SELECT %s, leave_info.employee_id, end-begin AS day" +
                             "FROM leave_info, employee WHERE leave_info.employee_id = employee.employee_id" +
-                            " %s %s %s %s %s %s ) AS days(%s, employee_id, day) GROUP BY %s ) AS %s_count(%s,count) ORDER BY %s",
-                    groupBy, groupBy, agFunc, groupBy, sqlEmployeeID, sqlDepartmentID, sqlLeaveType, sqlDayBegin, sqlDayEnd, sqlStatus,
-                    groupBy, groupBy, groupBy, groupBy, sqlOrder);
+                            " %s %s %s %s %s %s )  GROUP BY %s  %s",
+                    groupBy, agFunc, groupBy, sqlEmployeeID, sqlDepartmentID, sqlLeaveType, sqlDayBegin, sqlDayEnd, sqlStatus,
+                    groupBy, sqlOrder);
             ResultSet resultSet = DBUtils.executeSql(sql);
             System.out.println("--------------leave_info---------------");
             System.out.printf("%s        count\n",groupBy);
@@ -391,11 +391,11 @@ public class Manager extends User {
             }else if (oderByCount==1){
                 sqlOrder = "ORDER BY "+groupBy+" desc";
             }
-            String sql = String.format("SELECT %s, count FROM (SELECT %s, %s FROM (SELECT %s, trip.employee_id, end-begin " +
+            String sql = String.format("SELECT %s, %s AS count FROM (SELECT %s, trip.employee_id, end-begin AS day" +
                             "FROM trip, employee WHERE trip.employee_id = employee.employee_id" +
-                            " %s %s %s %s %s %s ) AS days(%s, employee_id, day) GROUP BY %s ) AS %s_count(%s,count) ORDER BY %s",
-                    groupBy, groupBy, agFunc, groupBy, sqlEmployeeID, sqlDepartmentID, sqlTripType, sqlDayBegin, sqlDayEnd, sqlStatus,
-                    groupBy, groupBy, groupBy, groupBy, sqlOrder);
+                            " %s %s %s %s %s %s ) GROUP BY %s  %s",
+                    groupBy, agFunc, groupBy, sqlEmployeeID, sqlDepartmentID, sqlTripType, sqlDayBegin, sqlDayEnd, sqlStatus,
+                    groupBy, sqlOrder);
             ResultSet resultSet = DBUtils.executeSql(sql);
             System.out.println("--------------trip_info---------------");
             System.out.printf("%s        count\n",groupBy);

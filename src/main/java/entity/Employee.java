@@ -118,7 +118,7 @@ public class Employee extends User {
         return -1;
     }
     public int queryLeave(int order, int dayUP, int dayLow) throws Exception {
-        if (dayUP<=dayLow)
+        if (dayUP<=dayLow&&dayUP!=-1)
             return 0;
         String sqlOrder;
         String sqlDayUp = "";
@@ -142,7 +142,7 @@ public class Employee extends User {
         return 0;
     }
     public int queryTrip(int order, int dayUP, int dayLow) throws Exception {
-        if (dayUP<=dayLow)
+        if (dayUP<=dayLow&&dayUP!=-1)
             return 0;
         String sqlOrder;
         String sqlDayUp = "";
@@ -187,23 +187,23 @@ public class Employee extends User {
         return 0;
     }
     public void dumpLeaveInfo(ResultSet resultSet) throws SQLException {
-        System.out.printf("%-8d %-10s %-15s %8s %8s %8s %8s", resultSet.getInt("apply_id"),
+        System.out.printf("%-8d %-10s %-15s %8s %8s %8s %8s\n", resultSet.getInt("apply_id"),
                 resultSet.getString("begin"), resultSet.getString("end"),
-                resultSet.getInt("leave_type"),
+                LeaveType.values()[resultSet.getInt("leave_type")],
                 Status.values()[resultSet.getInt("status")],
                 resultSet.getString("reject_reason"),
                 resultSet.getString("reason"));
     }
     public void dumpTrip(ResultSet resultSet) throws SQLException {
-        System.out.printf("%-8d %-10s %-15s %8s %8s %8s %8s", resultSet.getInt("apply_id"),
+        System.out.printf("%-8d %-10s %-15s %8s %8s %8s %8s\n", resultSet.getInt("apply_id"),
                 resultSet.getString("begin"), resultSet.getString("end"),
+                Trip.values()[resultSet.getInt("trip_type")],
                 Status.values()[resultSet.getInt("status")],
                 resultSet.getString("reject_reason"),
-                resultSet.getInt("trip_type"),
                 resultSet.getString("business"));
     }
     public void dumpAttendance(ResultSet resultSet) throws SQLException {
-        System.out.printf("%-8s %-10s %-15s %8s",
+        System.out.printf("%-8s %-10s %-15s %8s\n",
                 resultSet.getString("date"), resultSet.getString("sign_in_time"),
                 resultSet.getString("sign_off_time"),
                 AttendanceStatus.values()[resultSet.getInt("status")]);

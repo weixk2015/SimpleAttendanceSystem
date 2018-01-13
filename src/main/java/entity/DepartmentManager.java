@@ -11,7 +11,7 @@ import java.sql.SQLException;
  * Created by devilpi on 06/01/2018.
  */
 public class DepartmentManager extends Manager {
-    int departmentID;
+    public int departmentID;
     public DepartmentManager(User user) {
         this.age = user.age;
         this.employeeId = user.employeeId;
@@ -79,16 +79,16 @@ public class DepartmentManager extends Manager {
         DBUtils.executeUpdate(sql);
     }
     public void queryEmployeeById(int id) throws Exception {
-
         String sql = "SELECT * FROM user WHERE employee_id = "+id;
         ResultSet resultSet = DBUtils.executeSql(sql);
-        int type = resultSet.getInt("type");
-        if (type!=0)
-            throw new PermisionDeniedException();
-        String employeeSql = "SELECT * FROM employee WHERE employee_id = "+id;
-        ResultSet resultSet1 = DBUtils.executeSql(employeeSql);
-        if (resultSet1.getInt("department_id")!=departmentID)
-            throw new PermisionDeniedException();
+        if (id!=employeeId){
+            String employeeSql = "SELECT * FROM employee WHERE employee_id = "+id;
+            ResultSet resultSet1 = DBUtils.executeSql(employeeSql);
+            if (!resultSet1.next())
+                throw new PermisionDeniedException();
+            if (resultSet1.getInt("department_id")!=departmentID)
+                throw new PermisionDeniedException();
+        }
         System.out.println("id       name        age      type");
         while(resultSet.next()) {
             dumpUserInfo(resultSet);
@@ -97,17 +97,10 @@ public class DepartmentManager extends Manager {
     public void queryEmployeeByName(String name) throws Exception {
         String sql = String.format("SELECT * FROM user WHERE name = \'%s\'",name );
         ResultSet resultSet = DBUtils.executeSql(sql);
-        int type = resultSet.getInt("type");
-        if (type!=0)
-            throw new PermisionDeniedException();
-        String employeeSql = "SELECT * FROM employee WHERE employee_id = "+resultSet.getInt("employee_id");
-        ResultSet resultSet1 = DBUtils.executeSql(employeeSql);
-        if (resultSet1.getInt("department_id")!=departmentID)
-            throw new PermisionDeniedException();
-        System.out.println("id       name        age      type");
-        while(resultSet.next()) {
-            dumpUserInfo(resultSet);
-        }
+        if (!resultSet.next())
+            throw new NoSuchUserException();
+        int id = resultSet.getInt("employee_id");
+        queryEmployeeById(id);
     }
     private int queryDepartmentID() throws SQLException, NoSuchUserException {
 
@@ -133,8 +126,11 @@ public class DepartmentManager extends Manager {
         else
             departID = departmentID;
         if (ID!=-1){
+            System.out.println(ID);
             String employeeSql = "SELECT * FROM employee WHERE employee_id = "+ID;
             ResultSet resultSet1 = DBUtils.executeSql(employeeSql);
+            if (!resultSet1.next())
+                throw new NoSuchUserException();
             if (resultSet1.getInt("department_id")!=departmentID)
                 throw new PermisionDeniedException();
         }
@@ -159,17 +155,17 @@ public class DepartmentManager extends Manager {
             sqlOrder = "ORDER BY "+order;
         if (!groupBy.equals("")) {
             if (oderByCount==0){
-                sqlOrder = "ORDER BY "+groupBy+" asc";
+                sqlOrder = "ORDER BY count asc";
             }else if (oderByCount==1){
-                sqlOrder = "ORDER BY "+groupBy+" desc";
+                sqlOrder = "ORDER BY count desc";
             }
             if (!countArg.equals("*")){
                 countArg = "DISTINCT "+countArg;
             }
-            String sql = String.format("SELECT %s, count FROM (SELECT %s, COUNT(%s) FROM attendance, employee WHERE attendance.employee_id = employee.employee_id" +
-                            " %s %s %s %s %s GROUP BY %s ) AS %s_count(%s,count) ORDER BY %s",
-                    groupBy, groupBy, countArg, sqlEmployeeID, sqlDepartmentID, sqlDayBegin, sqlDayEnd, sqlStatus, groupBy,
-                    groupBy, groupBy, sqlOrder);
+            String sql = String.format("SELECT %s, COUNT(%s) AS count FROM attendance, employee WHERE attendance.employee_id = employee.employee_id" +
+                            " %s %s %s %s %s GROUP BY %s  %s",
+                    groupBy, countArg, sqlEmployeeID, sqlDepartmentID, sqlDayBegin, sqlDayEnd, sqlStatus, groupBy, sqlOrder);
+            System.out.println(sql);
             ResultSet resultSet = DBUtils.executeSql(sql);
             System.out.println("--------------attendances_info---------------");
             System.out.printf("%s        count\n",groupBy);
@@ -181,6 +177,7 @@ public class DepartmentManager extends Manager {
         String sql = String.format("SELECT * FROM attendance, employee WHERE attendance.employee_id = employee.employee_id" +
                         " %s %s %s %s %s %s ",
                 sqlEmployeeID, sqlDepartmentID, sqlDayBegin, sqlDayEnd, sqlStatus, sqlOrder);
+        System.out.println(sql);
         ResultSet resultSet = DBUtils.executeSql(sql);
         System.out.println("--------------attendance_info---------------");
         System.out.println("employee_id employee_name  department_id  date  sign_in  sign_off  status");
@@ -231,15 +228,15 @@ public class DepartmentManager extends Manager {
                 sqlDayBegin = "AND begin >= \'" + dateBegin + "\'";
             }
             if (oderByCount==0){
-                sqlOrder = "ORDER BY "+groupBy+" asc";
+                sqlOrder = "ORDER BY count asc";
             }else if (oderByCount==1){
-                sqlOrder = "ORDER BY "+groupBy+" desc";
+                sqlOrder = "ORDER BY count desc";
             }
-            String sql = String.format("SELECT %s, count FROM (SELECT %s, %s FROM (SELECT %s, leave_info.employee_id, end-begin " +
+            String sql = String.format("SELECT %s, %s AS count FROM (SELECT %s, leave_info.employee_id, end-begin AS day" +
                             "FROM leave_info, employee WHERE leave_info.employee_id = employee.employee_id" +
-                            " %s %s %s %s %s %s ) AS days(%s, employee_id, day) GROUP BY %s ) AS %s_count(%s,count) ORDER BY %s",
-                    groupBy, groupBy, agFunc, groupBy, sqlEmployeeID, sqlDepartmentID, sqlLeaveType, sqlDayBegin, sqlDayEnd, sqlStatus,
-                    groupBy, groupBy, groupBy, groupBy, sqlOrder);
+                            " %s %s %s %s %s %s )  GROUP BY %s  %s",
+                    groupBy, agFunc, groupBy, sqlEmployeeID, sqlDepartmentID, sqlLeaveType, sqlDayBegin, sqlDayEnd, sqlStatus,
+                    groupBy, sqlOrder);
             ResultSet resultSet = DBUtils.executeSql(sql);
             System.out.println("--------------leave_info---------------");
             System.out.printf("%s        count\n",groupBy);
@@ -304,11 +301,11 @@ public class DepartmentManager extends Manager {
             }else if (oderByCount==1){
                 sqlOrder = "ORDER BY "+groupBy+" desc";
             }
-            String sql = String.format("SELECT %s, count FROM (SELECT %s, %s FROM (SELECT %s, trip.employee_id, end-begin " +
+            String sql = String.format("SELECT %s, %s AS count FROM (SELECT %s, trip.employee_id, end-begin AS day" +
                             "FROM trip, employee WHERE trip.employee_id = employee.employee_id" +
-                            " %s %s %s %s %s %s ) AS days(%s, employee_id, day) GROUP BY %s ) AS %s_count(%s,count) ORDER BY %s",
-                    groupBy, groupBy, agFunc, groupBy, sqlEmployeeID, sqlDepartmentID, sqlTripType, sqlDayBegin, sqlDayEnd, sqlStatus,
-                    groupBy, groupBy, groupBy, groupBy, sqlOrder);
+                            " %s %s %s %s %s %s ) GROUP BY %s  %s",
+                    groupBy, agFunc, groupBy, sqlEmployeeID, sqlDepartmentID, sqlTripType, sqlDayBegin, sqlDayEnd, sqlStatus,
+                    groupBy, sqlOrder);
             ResultSet resultSet = DBUtils.executeSql(sql);
             System.out.println("--------------trip_info---------------");
             System.out.printf("%s        count\n",groupBy);
