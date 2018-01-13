@@ -42,7 +42,7 @@ public class Main {
         sc = new Scanner(System.in);
         while(true) {
             if(user == null) {
-                System.out.println("Please log in first!");
+                System.out.println("Please login first!");
                 login();
             } else if(user instanceof Employee) {
                 solveEmployee();
@@ -561,14 +561,20 @@ public class Main {
         System.out.println("Please choose the type you want to query \n" +
                 "1.number of days\t2.number of employee");
         type = Integer.parseInt(sc.nextLine());
+        String groupBy = "department_id";
+        if(type == 1) {
+            System.out.println("group by(1.department 2.employee): ");
+            int groupType = Integer.parseInt(sc.nextLine());
+            if(groupType == 2) groupBy = "attendance.employee_id";
+        }
         System.out.println("Please choose the order(0 for asc, 1 for desc): ");
         int orderBy = Integer.parseInt(sc.nextLine());
         if(orderBy < 0 || orderBy > 1) orderBy = -1;
         switch (type) {
             case 1:
                 try {
-                    if(departmentId != -1) ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "department_id", "*", orderBy);
-                    else ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "department_id", "*", orderBy);
+                    if(departmentId != -1) ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, groupBy, "*", orderBy);
+                    else ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, groupBy, "*", orderBy);
                 } catch (PermisionDeniedException e) {
                     System.out.println("Sorry, your permission is insufficient!");
                 } catch (Exception e) {
@@ -577,8 +583,8 @@ public class Main {
                 break;
             case 2:
                 try {
-                    if(departmentId != -1) ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "department_id", "attendance.employee_id", orderBy);
-                    else ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "department_id", "attendance.employee_id", orderBy);
+                    if(departmentId != -1) ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, groupBy, "attendance.employee_id", orderBy);
+                    else ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, groupBy, "attendance.employee_id", orderBy);
                 } catch (PermisionDeniedException e) {
                     System.out.println("Sorry, your permission is insufficient!");
                 } catch (Exception e) {
@@ -698,14 +704,20 @@ public class Main {
         System.out.println("Please choose the type you want to query \n" +
                 "1.number of days\t2.number of employee");
         type = Integer.parseInt(sc.nextLine());
+        String groupBy = "department_id";
+        if(type == 1) {
+            System.out.println("group by(1.department 2.employee): ");
+            int groupType = Integer.parseInt(sc.nextLine());
+            if(groupType == 2) groupBy = "attendance.employee_id";
+        }
         System.out.println("Please choose the order(0 for asc, 1 for desc): ");
         int orderBy = Integer.parseInt(sc.nextLine());
         if(orderBy < 0 || orderBy > 1) orderBy = -1;
         switch (type) {
             case 1:
                 try {
-                    if(departmentId != -1) ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, "department_id", "sum(day)", orderBy);
-                    else ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, "department_id", "sum(day)", orderBy);
+                    if(departmentId != -1) ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, groupBy, "sum(day)", orderBy);
+                    else ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, groupBy, "sum(day)", orderBy);
                 } catch (PermisionDeniedException e) {
                     System.out.println("Sorry, your permission is insufficient!");
                 } catch (Exception e) {
@@ -714,8 +726,8 @@ public class Main {
                 break;
             case 2:
                 try {
-                    if(departmentId != -1) ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, "department_id", "count(distinct attendance.employee_id)", orderBy);
-                    else ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, "department_id", "count(distinct attendance.employee_id)", orderBy);
+                    if(departmentId != -1) ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, groupBy, "count(distinct attendance.employee_id)", orderBy);
+                    else ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, groupBy, "count(distinct attendance.employee_id)", orderBy);
                 } catch (PermisionDeniedException e) {
                     System.out.println("Sorry, your permission is insufficient!");
                 } catch (Exception e) {
@@ -835,14 +847,20 @@ public class Main {
         System.out.println("Please choose the type you want to query \n" +
                 "1.number of days\t2.number of employee");
         type = Integer.parseInt(sc.nextLine());
+        String groupBy = "department_id";
+        if(type == 1) {
+            System.out.println("group by(1.department 2.employee): ");
+            int groupType = Integer.parseInt(sc.nextLine());
+            if(groupType == 2) groupBy = "attendance.employee_id";
+        }
         System.out.println("Please choose the order(0 for asc, 1 for desc): ");
         int orderBy = Integer.parseInt(sc.nextLine());
         if(orderBy < 0 || orderBy > 1) orderBy = -1;
         switch (type) {
             case 1:
                 try {
-                    if(departmentId != -1) ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, "department_id", "sum(day)", orderBy);
-                    else ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, "department_id", "sum(day)", orderBy);
+                    if(departmentId != -1) ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, groupBy, "sum(day)", orderBy);
+                    else ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, groupBy, "sum(day)", orderBy);
                 } catch (PermisionDeniedException e) {
                     System.out.println("Sorry, your permission is insufficient!");
                 } catch (Exception e) {
@@ -851,8 +869,8 @@ public class Main {
                 break;
             case 2:
                 try {
-                    if(departmentId != -1) ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, "department_id", "count(distinct attendance.employee_id)", orderBy);
-                    else ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, "department_id", "count(distinct attendance.employee_id)", orderBy);
+                    if(departmentId != -1) ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, groupBy, "count(distinct attendance.employee_id)", orderBy);
+                    else ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, groupBy, "count(distinct attendance.employee_id)", orderBy);
                 } catch (PermisionDeniedException e) {
                     System.out.println("Sorry, your permission is insufficient!");
                 } catch (Exception e) {
