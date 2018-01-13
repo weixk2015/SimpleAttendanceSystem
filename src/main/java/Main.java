@@ -27,7 +27,7 @@ public class Main {
 
     static String systemManagerAction[] = {"logout", "query trip", "query leave", "check attendance",
             "modify self info", "query self info", "add employee", "modify employee info", "query employee info", "add department",
-            "modify department info", "delete user", "check log", "system config"};
+            "modify department info", "delete user", "check log", "system config", "modify employee attendance status"};
 
 
     static String attendanceStatus[] = {"normal", "late", "early_quit", "absent", "leave", "trip", "all"};
@@ -234,6 +234,8 @@ public class Main {
             case 13:
                 systemConfig();
                 break;
+            case 14:
+                modifyEmployeeAttendanceStatus();
             default:
                 System.out.println("No such choice!");
                 break;
@@ -1081,6 +1083,27 @@ public class Main {
             default:
                 System.out.println("No such choice!");
                 break;
+        }
+    }
+
+    public static void modifyEmployeeAttendanceStatus() {
+        while(true) {
+            System.out.println("Please input employee id: ");
+            int employeeId = Integer.parseInt(sc.nextLine());
+            System.out.println("Please input date(YYYY-mm-dd, eg, 2018-01-11): ");
+            String day = sc.nextLine();
+            System.out.println("Please input status(1.normal 2.late 3.early_quit 4.absent 5.leave 6.trip): ");
+            int newStatus = Integer.parseInt(sc.nextLine()) - 1;
+            if(newStatus >= 0 && newStatus <= 5) {
+                try {
+
+                }
+            } else {
+                System.out.println("No such status!");
+            }
+            System.out.println("Continue or quit(c/q): ");
+            String os = sc.nextLine();
+            if("q".equals(os)) break;
         }
     }
 
