@@ -14,11 +14,25 @@ import main.java.entity.User;
  * Created by devilpi on 06/01/2018.
  */
 public class Main {
-    static String action[] = {"login", "logout", "query", "add", "modify", "delete", "trip", "leave", "checkin", "checkout"};
+
+    static String employeeAction[] = {"logout", "check in", "check out", "apply trip", "apply leave", "check trip", "check leave",
+        "modify self info", "query self info", "query attendance info"};
+
+    static String HRManagerAction[] = {"logout", "query trip", "query leave", "check attendance",
+            "modify self info", "query self info", "add employee", "modify employee info", "query employee info", "add department",
+        "modify department info"};
+
+    static String departmentManagerAction[] = {"logout", "check trip", "check leave", "check attendance",
+            "modify self info", "query self info", "query trip", "query leave", "query employee info"};
+
+    static String systemManagerAction[] = {"logout", "query trip", "query leave", "check attendance",
+            "modify self info", "query self info", "add employee", "modify employee info", "query employee info", "add department",
+            "modify department info", "delete user", "check log", "system config"};
+
+
     static String attendanceStatus[] = {"normal", "late", "early_quit", "absent", "leave", "trip", "all"};
     static String transactionStatus[] = {"waiting", "permitted", "rejected", "all"};
 
-    static Controller controller = new Controller();
     static User user = null;
 
     static Scanner sc;
@@ -27,23 +41,202 @@ public class Main {
         System.out.println("\nwelcome to simple attendance system v1.0\n");
         sc = new Scanner(System.in);
         while(true) {
-            System.out.print("Please input what you want to do: ");
-            String act = sc.nextLine();
-            boolean flag = false;
-            for(int i = 0; i < action.length; i ++) {
-                if(act.equals(action[i])) {
-                    flag = true;
-                    Class<Main> classType = Main.class;
-                    try {
-                        Method method = classType.getDeclaredMethod(action[i], null);
-                        method.invoke(classType, null);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                }
+            if(user == null) {
+                System.out.println("Please log in first!");
+                login();
+            } else if(user instanceof Employee) {
+                solveEmployee();
+            } else if(user instanceof HRmanager) {
+                solveHRManager();
+            } else if(user instanceof DepartmentManager) {
+                solveDepartmentManager();
+            } else {
+                solveSystemManager();
             }
-            if(!flag) System.out.println("Sorry, your action is illegal!");
+        }
+    }
+
+    public static void solveEmployee() {
+        for(int i = 0; i < employeeAction.length; i ++) {
+            System.out.print(i + "." + employeeAction[i] + " ");
+        }
+        System.out.print("\nPlease input what you want to do: ");
+        int type = Integer.parseInt(sc.nextLine());
+        switch (type) {
+            case 0:
+                logout();
+                break;
+            case 1:
+                checkin();
+                break;
+            case 2:
+                checkout();
+                break;
+            case 3:
+                tripEmployee();
+                break;
+            case 4:
+                leaveEmployee();
+                break;
+            case 5:
+                queryEmployeeBusinessTrip();
+                break;
+            case 6:
+                queryEmployeeLeaveInfo();
+                break;
+            case 7:
+                modifyEmployee();
+                break;
+            case 8:
+                queryEmployeeInfo();
+                break;
+            case 9:
+                queryEmployeeAttendance();
+                break;
+            default:
+                System.out.println("No such choice!");
+                break;
+        }
+    }
+
+    public static void solveHRManager() {
+        for(int i = 0; i < HRManagerAction.length; i ++) {
+            System.out.print(i + "." + HRManagerAction[i] + " ");
+        }
+        System.out.print("\nPlease input what you want to do: ");
+        int type = Integer.parseInt(sc.nextLine());
+        switch (type) {
+            case 0:
+                logout();
+                break;
+            case 1:
+                queryManagerBusinessTrip();
+                break;
+            case 2:
+                queryManagerLeaveInfo();
+                break;
+            case 3:
+                queryManagerAttendance();
+                break;
+            case 4:
+                modifyEmployee();
+                break;
+            case 5:
+                queryEmployeeInfo();
+                break;
+            case 6:
+                addEmployee();
+                break;
+            case 7:
+                modifyOtherEmployee();
+                break;
+            case 8:
+                queryManagerInfo();
+                break;
+            case 9:
+                addDepartment();
+                break;
+            case 10:
+                modifyDepartment();
+                break;
+            default:
+                System.out.println("No such choice!");
+                break;
+        }
+    }
+
+    public static void solveDepartmentManager() {
+        for(int i = 0; i < departmentManagerAction.length; i ++) {
+            System.out.print(i + "." + departmentManagerAction[i] + " ");
+        }
+        System.out.print("\nPlease input what you want to do: ");
+        int type = Integer.parseInt(sc.nextLine());
+        switch (type) {
+            case 0:
+                logout();
+                break;
+            case 1:
+                tripDepartmentManager();
+                break;
+            case 2:
+                leaveDepartmentManager();
+                break;
+            case 3:
+                queryManagerAttendance();
+                break;
+            case 4:
+                modifyEmployee();
+                break;
+            case 5:
+                queryEmployeeInfo();
+                break;
+            case 6:
+                queryManagerBusinessTrip();
+                break;
+            case 7:
+                queryManagerLeaveInfo();
+                break;
+            case 8:
+                queryManagerInfo();
+                break;
+            default:
+                System.out.println("No such choice!");
+                break;
+        }
+    }
+
+    public static void solveSystemManager() {
+        for(int i = 0; i < systemManagerAction.length; i ++) {
+            System.out.print(i + "." + systemManagerAction[i] + " ");
+        }
+        System.out.print("\nPlease input what you want to do: ");
+        int type = Integer.parseInt(sc.nextLine());
+        switch (type) {
+            case 0:
+                logout();
+                break;
+            case 1:
+                queryManagerBusinessTrip();
+                break;
+            case 2:
+                queryManagerLeaveInfo();
+                break;
+            case 3:
+                queryManagerAttendance();
+                break;
+            case 4:
+                modifyEmployee();
+                break;
+            case 5:
+                queryEmployeeInfo();
+                break;
+            case 6:
+                addEmployee();
+                break;
+            case 7:
+                modifyOtherEmployee();
+                break;
+            case 8:
+                queryManagerInfo();
+                break;
+            case 9:
+                addDepartment();
+                break;
+            case 10:
+                modifyDepartment();
+                break;
+            case 11:
+                delete();
+                break;
+            case 12:
+                checkLog();
+                break;
+            case 13:
+                systemConfig();
+                break;
+            default:
+                System.out.println("No such choice!");
+                break;
         }
     }
 
@@ -92,38 +285,6 @@ public class Main {
         user = null;
     }
 
-    public static void add() {
-        if(!checkLogin()) return;
-        if(user instanceof Employee || user instanceof DepartmentManager) {
-            System.out.println("Sorry, your permission is insufficient!");
-        } else {
-            addManager();
-        }
-    }
-
-    public static void addManager() {
-        System.out.println("Please choose what you want to add: " +
-                "1.new employee\t2.new department\n");
-        int type = Integer.parseInt(sc.nextLine());
-        switch (type) {
-            case 1:
-                addEmployee();
-                break;
-            case 2:
-                addDepartment();
-                break;
-            default:
-                System.out.println("No such choice!");
-                break;
-        }
-    }
-
-    public static void modify() {
-        if(!checkLogin()) return;
-        if(user instanceof Employee || user instanceof DepartmentManager) modifyEmployee();
-        else modifyManager();
-    }
-
     public static void modifyEmployee() {
         System.out.print("Please input your new password: ");
         String password = sc.nextLine();
@@ -136,26 +297,6 @@ public class Main {
             System.out.println("modify successfully!");
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    public static void modifyManager() {
-        System.out.println("Please choose what you want to modify: " +
-                "1.self info\t2.modify employee\t3.modify department\n");
-        int type = Integer.parseInt(sc.nextLine());
-        switch (type) {
-            case 1:
-                modifyEmployee();
-                break;
-            case 2:
-                modifyOtherEmployee();
-                break;
-            case 3:
-                modifyDepartment();
-                break;
-            default:
-                System.out.println("No such choice!");
-                break;
         }
     }
 
@@ -243,35 +384,6 @@ public class Main {
         }
     }
 
-    public static void query() {
-        if(!checkLogin()) return;
-        if(user instanceof Employee) queryEmployee();
-        else queryManager();
-    }
-
-    public static void queryEmployee() {
-        System.out.println("Please choose the type you want to query: \n" +
-                "1.self info\t2.attendance\t3.leave info\t4.business trip");
-        int type = Integer.parseInt(sc.nextLine());
-        switch (type) {
-            case 1:
-                queryEmployeeInfo();
-                break;
-            case 2:
-                queryEmployeeAttendance();
-                break;
-            case 3:
-                queryEmployeeLeaveInfo();
-                break;
-            case 4:
-                queryEmployeeBusinessTrip();
-                break;
-            default:
-                System.out.println("No such choice!");
-                break;
-        }
-    }
-
     public static void queryEmployeeInfo() {
         try {
             user.queryUser();
@@ -324,29 +436,6 @@ public class Main {
         }
     }
 
-    public static void queryManager() {
-        System.out.println("Please choose the type you want to query: \n" +
-                "1.employee info\t2.attendance\t3.leave info\t4.business trip");
-        int type = Integer.parseInt(sc.nextLine());
-        switch (type) {
-            case 1:
-                queryManagerInfo();
-                break;
-            case 2:
-                queryManagerAttendance();
-                break;
-            case 3:
-                queryManagerLeaveInfo();
-                break;
-            case 4:
-                queryManagerBusinessTrip();
-                break;
-            default:
-                System.out.println("No such choice!");
-                break;
-        }
-    }
-
     public static void queryManagerInfo() {
         System.out.println("Please input employee id(-1 if you want to query by name): ");
         int employeeId = Integer.parseInt(sc.nextLine());
@@ -393,10 +482,16 @@ public class Main {
                 System.out.println("No such choice!");
                 break;
         }
-        System.out.println("Please choose a department id(-1 for all): ");
-        int departmentId = Integer.parseInt(sc.nextLine());
+        int departmentId;
+        if(user instanceof DepartmentManager) {
+            departmentId = ((DepartmentManager)user).departmentID;
+        } else {
+            System.out.println("Please choose a department id(-1 for all): ");
+            departmentId = Integer.parseInt(sc.nextLine());
+        }
+
         System.out.println("Please input a employee(id or name, none if not necessary): ");
-        int employeeId = 0;
+        int employeeId = -1;
         String nameOrId = sc.nextLine();
         if(!"none".equals(nameOrId)) {
             try {
@@ -461,16 +556,19 @@ public class Main {
         } catch (Exception e) {
             System.out.println("query failed!");
         }
-        System.out.println("Do you want to quit this query?(yes, no): ");
-        if("yes".equals(sc.nextLine())) return;
+        System.out.println("Do you want to continue this query?(yes, no): ");
+        if("no".equals(sc.nextLine())) return;
         System.out.println("Please choose the type you want to query \n" +
                 "1.number of days\t2.number of employee");
         type = Integer.parseInt(sc.nextLine());
+        System.out.println("Please choose the order(0 for asc, 1 for desc): ");
+        int orderBy = Integer.parseInt(sc.nextLine());
+        if(orderBy < 0 || orderBy > 1) orderBy = -1;
         switch (type) {
             case 1:
                 try {
-                    if(departmentId != -1) ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "department_id", "*", -1);
-                    else ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "employee_id", "*", -1);
+                    if(departmentId != -1) ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "department_id", "*", orderBy);
+                    else ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "department_id", "*", orderBy);
                 } catch (PermisionDeniedException e) {
                     System.out.println("Sorry, your permission is insufficient!");
                 } catch (Exception e) {
@@ -479,8 +577,8 @@ public class Main {
                 break;
             case 2:
                 try {
-                    if(departmentId != -1) ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "department_id", "employee_id", -1);
-                    else ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "employee_id", "employee_id", -1);
+                    if(departmentId != -1) ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "department_id", "attendance.employee_id", orderBy);
+                    else ((Manager)user).queryAttendance(employeeId, departmentId, begin, end, status, order, "department_id", "attendance.employee_id", orderBy);
                 } catch (PermisionDeniedException e) {
                     System.out.println("Sorry, your permission is insufficient!");
                 } catch (Exception e) {
@@ -515,10 +613,15 @@ public class Main {
                 System.out.println("No such choice!");
                 break;
         }
-        System.out.println("Please choose a department id(-1 for all): ");
-        int departmentId = Integer.parseInt(sc.nextLine());
+        int departmentId;
+        if(user instanceof DepartmentManager) {
+            departmentId = ((DepartmentManager)user).departmentID;
+        } else {
+            System.out.println("Please choose a department id(-1 for all): ");
+            departmentId = Integer.parseInt(sc.nextLine());
+        }
         System.out.println("Please input a employee(id or name, none if not necessary): ");
-        int employeeId = 0;
+        int employeeId = -1;
         String nameOrId = sc.nextLine();
         if(!"none".equals(nameOrId)) {
             try {
@@ -590,16 +693,19 @@ public class Main {
         } catch (Exception e) {
             System.out.println("query failed!");
         }
-        System.out.println("Do you want to quit this query?(yes, no): ");
-        if("yes".equals(sc.nextLine())) return;
+        System.out.println("Do you want to continue this query?(yes, no): ");
+        if("no".equals(sc.nextLine())) return;
         System.out.println("Please choose the type you want to query \n" +
                 "1.number of days\t2.number of employee");
         type = Integer.parseInt(sc.nextLine());
+        System.out.println("Please choose the order(0 for asc, 1 for desc): ");
+        int orderBy = Integer.parseInt(sc.nextLine());
+        if(orderBy < 0 || orderBy > 1) orderBy = -1;
         switch (type) {
             case 1:
                 try {
-                    if(departmentId != -1) ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, "department_id", "sum(day)", -1);
-                    else ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, "employee_id", "sum(day)", -1);
+                    if(departmentId != -1) ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, "department_id", "sum(day)", orderBy);
+                    else ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, "department_id", "sum(day)", orderBy);
                 } catch (PermisionDeniedException e) {
                     System.out.println("Sorry, your permission is insufficient!");
                 } catch (Exception e) {
@@ -608,8 +714,8 @@ public class Main {
                 break;
             case 2:
                 try {
-                    if(departmentId != -1) ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, "department_id", "count(distinct employee_id)", -1);
-                    else ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, "employee_id", "count(distinct employee_id)", -1);
+                    if(departmentId != -1) ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, "department_id", "count(distinct attendance.employee_id)", orderBy);
+                    else ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, "department_id", "count(distinct attendance.employee_id)", orderBy);
                 } catch (PermisionDeniedException e) {
                     System.out.println("Sorry, your permission is insufficient!");
                 } catch (Exception e) {
@@ -644,10 +750,15 @@ public class Main {
                 System.out.println("No such choice!");
                 break;
         }
-        System.out.println("Please choose a department id(-1 for all): ");
-        int departmentId = Integer.parseInt(sc.nextLine());
+        int departmentId;
+        if(user instanceof DepartmentManager) {
+            departmentId = ((DepartmentManager)user).departmentID;
+        } else {
+            System.out.println("Please choose a department id(-1 for all): ");
+            departmentId = Integer.parseInt(sc.nextLine());
+        }
         System.out.println("Please input a employee(id or name, none if not necessary): ");
-        int employeeId = 0;
+        int employeeId = -1;
         String nameOrId = sc.nextLine();
         if(!"none".equals(nameOrId)) {
             try {
@@ -719,16 +830,19 @@ public class Main {
         } catch (Exception e) {
             System.out.println("query failed!");
         }
-        System.out.println("Do you want to quit this query?(yes, no): ");
-        if("yes".equals(sc.nextLine())) return;
+        System.out.println("Do you want to continue this query?(yes, no): ");
+        if("no".equals(sc.nextLine())) return;
         System.out.println("Please choose the type you want to query \n" +
                 "1.number of days\t2.number of employee");
         type = Integer.parseInt(sc.nextLine());
+        System.out.println("Please choose the order(0 for asc, 1 for desc): ");
+        int orderBy = Integer.parseInt(sc.nextLine());
+        if(orderBy < 0 || orderBy > 1) orderBy = -1;
         switch (type) {
             case 1:
                 try {
-                    if(departmentId != -1) ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, "department_id", "sum(day)", -1);
-                    else ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, "employee_id", "sum(day)", -1);
+                    if(departmentId != -1) ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, "department_id", "sum(day)", orderBy);
+                    else ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, "department_id", "sum(day)", orderBy);
                 } catch (PermisionDeniedException e) {
                     System.out.println("Sorry, your permission is insufficient!");
                 } catch (Exception e) {
@@ -737,8 +851,8 @@ public class Main {
                 break;
             case 2:
                 try {
-                    if(departmentId != -1) ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, "department_id", "count(distinct employee_id)", -1);
-                    else ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, "employee_id", "count(distinct employee_id)", -1);
+                    if(departmentId != -1) ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, "department_id", "count(distinct attendance.employee_id)", orderBy);
+                    else ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, "department_id", "count(distinct attendance.employee_id)", orderBy);
                 } catch (PermisionDeniedException e) {
                     System.out.println("Sorry, your permission is insufficient!");
                 } catch (Exception e) {
@@ -764,17 +878,6 @@ public class Main {
             }
         } else {
             System.out.println("Sorry, your permission is insufficient!");
-        }
-    }
-
-    public static void trip() {
-        if(!checkLogin()) return;
-        if(user instanceof Employee) {
-            tripEmployee();
-        } else if(user instanceof DepartmentManager) {
-            tripDepartmentManager();
-        } else {
-            tripManager();
         }
     }
 
@@ -834,25 +937,6 @@ public class Main {
         }
     }
 
-    public static void tripManager() {
-        try {
-            ((DepartmentManager)user).checkApply();
-        } catch (Exception e) {
-            System.out.println("something wrong happened!");
-        }
-    }
-
-    public static void leave() {
-        if(!checkLogin()) return;
-        if(user instanceof Employee) {
-            leaveEmployee();
-        } else if(user instanceof DepartmentManager) {
-            leaveDepartmentManager();
-        } else {
-            leaveManager();
-        }
-    }
-
     public static void leaveEmployee() {
         System.out.println("Please input leave type: \n" +
                 "1.sick leave\t2.personal leave\t3.maternity leave\t4.wedding leave\n");
@@ -909,14 +993,6 @@ public class Main {
         }
     }
 
-    public static void leaveManager() {
-        try {
-            ((DepartmentManager)user).checkApply();
-        } catch (Exception e) {
-            System.out.println("something wrong happened!");
-        }
-    }
-
     public static void checkin() {
         if(!checkLogin()) return;
         if(user instanceof Employee) {
@@ -942,6 +1018,51 @@ public class Main {
             }
         } else {
             System.out.println("You don't need to checkout!");
+        }
+    }
+
+    public static void checkLog() {
+        try {
+            System.out.println("Please input begin date(YYYY-mm-dd, eg, 2018-01-10): ");
+            String begin = sc.nextLine();
+            System.out.println("Please input end date(YYYY-mm-dd, eg, 2018-01-11): ");
+            String end = sc.nextLine();
+            ((SystemManager)user).showLog(begin, end);
+        } catch (Exception e) {
+            System.out.println("Query failed!");
+        }
+    }
+
+    public static void systemConfig() {
+        System.out.println("Please choose what you want to set: \n" +
+                "1.office hour\t2.holiday");
+        int type = Integer.parseInt(sc.nextLine());
+        switch (type) {
+            case 1:
+                try {
+                    System.out.println("Please input begin date(YYYY-mm-dd, eg, 2018-01-10): ");
+                    String begin = sc.nextLine();
+                    System.out.println("Please input end date(YYYY-mm-dd, eg, 2018-01-11): ");
+                    String end = sc.nextLine();
+                    ((SystemManager)user).setOfficeHour(begin, end);
+                } catch (Exception e) {
+                    System.out.println("set failed!");
+                }
+                break;
+            case 2:
+                try {
+                    System.out.println("Please input date(YYYY-mm-dd, eg, 2018-01-10): ");
+                    String day = sc.nextLine();
+                    System.out.println("is holiday?(0 for not, 1 for yes): ");
+                    int flag = Integer.parseInt(sc.nextLine());
+                    ((SystemManager)user).setHoliday(day, flag);
+                } catch (Exception e) {
+                    System.out.println("set failed!");
+                }
+                break;
+            default:
+                System.out.println("No such choice!");
+                break;
         }
     }
 
