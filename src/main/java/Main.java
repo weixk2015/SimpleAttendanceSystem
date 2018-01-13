@@ -724,13 +724,13 @@ public class Main {
 
             String order = "";
             System.out.println("Please input the property you want to order by(0 for default, \n" +
-                    "1 for date, 2 for department, 3 for employee, 4 for status, 5 for leaveType):");
+                    "1 for begin, 2 for department, 3 for employee, 4 for status, 5 for leaveType):");
             int orderNum = Integer.parseInt(sc.nextLine());
             switch (orderNum) {
                 case 0:
                     break;
                 case 1:
-                    order = "date ";
+                    order = "begin ";
                     break;
                 case 2:
                     order = "department_id ";
@@ -874,13 +874,13 @@ public class Main {
 
             String order = "";
             System.out.println("Please input the property you want to order by(0 for default, \n" +
-                    "1 for date, 2 for department, 3 for employee, 4 for status, 5 for tripType):");
+                    "1 for begin, 2 for department, 3 for employee, 4 for status, 5 for tripType):");
             int orderNum = Integer.parseInt(sc.nextLine());
             switch (orderNum) {
                 case 0:
                     break;
                 case 1:
-                    order = "date ";
+                    order = "begin ";
                     break;
                 case 2:
                     order = "department_id ";
