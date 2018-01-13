@@ -778,7 +778,7 @@ public class Main {
             if(type == 1) {
                 System.out.println("group by(1.department 2.employee): ");
                 int groupType = Integer.parseInt(sc.nextLine());
-                if(groupType == 2) groupBy = "attendance.employee_id";
+                if(groupType == 2) groupBy = "leave_info.employee_id";
             }
             System.out.println("Please choose the order(0 for asc, 1 for desc): ");
             int orderBy = Integer.parseInt(sc.nextLine());
@@ -928,7 +928,7 @@ public class Main {
             if(type == 1) {
                 System.out.println("group by(1.department 2.employee): ");
                 int groupType = Integer.parseInt(sc.nextLine());
-                if(groupType == 2) groupBy = "attendance.employee_id";
+                if(groupType == 2) groupBy = "trip.employee_id";
             }
             System.out.println("Please choose the order(0 for asc, 1 for desc): ");
             int orderBy = Integer.parseInt(sc.nextLine());
