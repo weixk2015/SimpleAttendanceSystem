@@ -170,7 +170,10 @@ public class DepartmentManager extends Manager {
             System.out.println(sql);
             ResultSet resultSet = DBUtils.executeSql(sql);
             System.out.println("--------------attendances_info---------------");
-            System.out.printf("%s        count\n",groupBy);
+            if (groupBy.equals("attendance.employee_id"))
+                System.out.println("employee_id        count");
+            else
+                System.out.printf("%s        count\n",groupBy);
             while(resultSet.next()) {
                 dumpGroupAttendance(resultSet, groupBy);
             }
@@ -198,6 +201,8 @@ public class DepartmentManager extends Manager {
         if (ID!=-1){
             String employeeSql = "SELECT * FROM  employee WHERE employee_id = "+ID;
             ResultSet resultSet1 = DBUtils.executeSql(employeeSql);
+            if (!resultSet1.next())
+                throw new NoSuchUserException();
             if (resultSet1.getInt("department_id")!=departmentID)
                 throw new PermisionDeniedException();
         }
@@ -267,6 +272,8 @@ public class DepartmentManager extends Manager {
         if (ID!=-1){
             String employeeSql = "SELECT * FROM employee  WHERE employee_id = "+ID;
             ResultSet resultSet1 = DBUtils.executeSql(employeeSql);
+            if (!resultSet1.next())
+                throw new NoSuchUserException();
             if (resultSet1.getInt("department_id")!=departmentID)
                 throw new PermisionDeniedException();
         }
