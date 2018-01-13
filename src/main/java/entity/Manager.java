@@ -235,7 +235,7 @@ public class Manager extends User {
                 getEmoployeeName(resultSet.getInt("employee_id")),
                 resultSet.getInt("department_id"),
                 resultSet.getString("begin"), resultSet.getString("end"),
-                LeaveType.values()[resultSet.getInt("trip_type")],
+                Trip.values()[resultSet.getInt("trip_type")],
                 Status.values()[resultSet.getInt("status")],
                 resultSet.getString("business"),
                 resultSet.getString("reject_reason"));
@@ -340,7 +340,7 @@ public class Manager extends User {
             if (!groupBy.equals("employee_id")){
                 bugFixSql = "employee.employee_id, ";
             }
-            String sql = String.format("SELECT %s, %s AS count FROM (SELECT employee.%s, %s, end-begin+1 AS day" +
+            String sql = String.format("SELECT %s, %s AS count FROM (SELECT employee.%s, %s end-begin+1 AS day" +
                             " FROM leave_info, employee WHERE leave_info.employee_id = employee.employee_id" +
                             " %s %s %s %s %s %s ) AS sum  GROUP BY %s  %s",
                     groupBy, agFunc, groupBy, bugFixSql, sqlEmployeeID, sqlDepartmentID, sqlLeaveType, sqlDayBegin, sqlDayEnd, sqlStatus,
