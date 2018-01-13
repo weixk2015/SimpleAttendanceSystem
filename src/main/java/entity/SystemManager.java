@@ -23,14 +23,6 @@ public class SystemManager extends Manager {
     }
     public void showLog(String start, String end) throws Exception, IllegalParameterException {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try {
-            sdf.parse(start);
-            sdf.parse(end);
-        } catch (Exception e) {
-            throw new IllegalParameterException();
-        }
-
         String sql = String.format("SELECT * FROM log WHERE time BETWEEN \'%s\' and \'%s\'", start, end);
         ResultSet resultSet = DBUtils.executeSql(sql);
         System.out.println("id       time                      action       description");
@@ -92,7 +84,7 @@ public class SystemManager extends Manager {
         DBUtils.executeUpdate(sql);
     }
     public void setOfficeHour(String begin, String end) throws Exception {
-        String sql = String.format("Update config SET office_begin = \'%s\' AND office_end = \'%s\'",begin,end);
+        String sql = String.format("Update config SET office_begin = \'%s\', office_end = \'%s\'",begin,end);
         DBUtils.executeUpdate(sql);
     }
     public void setHoliday(String day, int isHoliday) throws Exception {

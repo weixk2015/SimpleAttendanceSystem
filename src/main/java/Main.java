@@ -1166,11 +1166,12 @@ public class Main {
             switch (type) {
                 case 1:
                     try {
-                        System.out.println("Please input begin date(YYYY-mm-dd, eg, 2018-01-10): ");
+                        System.out.println("Please input begin time(hh:mm:ss, eg, 08:00:00): ");
                         String begin = sc.nextLine();
-                        System.out.println("Please input end date(YYYY-mm-dd, eg, 2018-01-11): ");
+                        System.out.println("Please input end time(hh:mm:ss, eg, 17:00:00): ");
                         String end = sc.nextLine();
                         ((SystemManager)user).setOfficeHour(begin, end);
+                        System.out.println("set successfully!");
                     } catch (Exception e) {
                         System.out.println("set failed!");
                     }
@@ -1182,6 +1183,7 @@ public class Main {
                         System.out.println("is holiday?(0 for not, 1 for yes): ");
                         int flag = Integer.parseInt(sc.nextLine());
                         ((SystemManager)user).setHoliday(day, flag);
+                        System.out.println("set successfully!");
                     } catch (Exception e) {
                         System.out.println("set failed!");
                     }
@@ -1207,6 +1209,7 @@ public class Main {
             if(newStatus >= 0 && newStatus <= 5) {
                 try {
                     ((SystemManager)user).setAttendanceStatus(employeeId, day, newStatus);
+                    System.out.println("set successfully!");
                 } catch (Exception e) {
                     System.out.println("set failed!");
                 }
