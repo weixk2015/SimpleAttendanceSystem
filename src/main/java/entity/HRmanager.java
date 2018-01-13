@@ -23,11 +23,12 @@ public class HRmanager extends Manager {
 
         String sql = "SELECT * FROM user WHERE employee_id = "+id;
         ResultSet resultSet = DBUtils.executeSql(sql);
-        int type = resultSet.getInt("type");
-        if (type==1||type==3)
-            throw new PermisionDeniedException();
+
         System.out.println("id       name        age      type");
         while(resultSet.next()) {
+            int type = resultSet.getInt("type");
+            if (type==1||type==3)
+                throw new PermisionDeniedException();
             dumpUserInfo(resultSet);
         }
     }
