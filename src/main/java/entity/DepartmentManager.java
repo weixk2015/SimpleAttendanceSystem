@@ -28,7 +28,7 @@ public class DepartmentManager extends Manager {
         String sql = String.format("SELECT leave_info.apply_id,leave_info.begin, leave_info.end, leave_info.employee_id," +
                 "leave_info.leave_type, leave_info.reason FROM leave_info,employee" +
                 " WHERE employee.department_id = %d" +
-                " AND leave_info.status = 0 AND employee.employee_id = leave_info.employee_id ",employeeId);
+                " AND leave_info.status = 0 AND employee.employee_id = leave_info.employee_id ",departmentID);
         ResultSet resultSet = DBUtils.executeSql(sql);
         System.out.println("-------------leave_info--------------");
         System.out.println("apply_id       begin       end        employee_id      leave_type       reason");
@@ -38,12 +38,12 @@ public class DepartmentManager extends Manager {
     }
     public void checkTripApply() throws Exception {
         System.out.println("--------------trip_info---------------");
-        String sql1 = String.format("SELECT trip.apply_id,trip.begin, trip.end, trip.employee_id," +
+        String sql = String.format("SELECT trip.apply_id,trip.begin, trip.end, trip.employee_id," +
                 "trip.trip_type, trip.business FROM trip,employee" +
                 " WHERE employee.department_id = %d" +
-                " AND trip.status = 0 AND employee.employee_id = trip.employee_id ",employeeId);
+                " AND trip.status = 0 AND employee.employee_id = trip.employee_id ",departmentID);
         System.out.println("apply_id       begin       end        employee_id      trip_type       business");
-        ResultSet resultSet = DBUtils.executeSql(sql1);
+        ResultSet resultSet = DBUtils.executeSql(sql);
         while(resultSet.next()) {
             dumpTrips(resultSet);
         }
@@ -62,22 +62,22 @@ public class DepartmentManager extends Manager {
     }
     public void permitLeave(int apply_id) throws Exception {
         String sql =  String.format("UPDATE leave_info SET status = 1" +
-                "WHERE apply_id = %d ",apply_id);
+                " WHERE apply_id = %d ",apply_id);
         DBUtils.executeUpdate(sql);
     }
     public void permitTrip(int apply_id) throws Exception {
         String sql =  String.format("UPDATE trip SET status = 1" +
-                "WHERE apply_id = %d ",apply_id);
+                " WHERE apply_id = %d ",apply_id);
         DBUtils.executeUpdate(sql);
     }
     public void rejectLeave(int apply_id, String reason) throws Exception {
-        String sql =  String.format("UPDATE leave_info SET status = 2,reject_reason = %s" +
-                "WHERE apply_id = %d ",reason, apply_id);
+        String sql =  String.format("UPDATE leave_info SET status = 2,reject_reason = \'%s\'" +
+                " WHERE apply_id = %d ",reason, apply_id);
         DBUtils.executeUpdate(sql);
     }
     public void rejectTrip(int apply_id, String reason) throws Exception {
-        String sql =  String.format("UPDATE trip SET status = 2,reject_reason = %s" +
-                "WHERE apply_id = %d ",reason, apply_id);
+        String sql =  String.format("UPDATE trip SET status = 2,reject_reason = \'%s\'" +
+                " WHERE apply_id = %d ",reason, apply_id);
         DBUtils.executeUpdate(sql);
     }
     public void queryEmployeeById(int id) throws Exception {
