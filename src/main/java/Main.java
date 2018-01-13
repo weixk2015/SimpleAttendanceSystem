@@ -310,6 +310,7 @@ public class Main {
 
     public static void addEmployee() {
         while(true) {
+
             System.out.println("Please input name: ");
             String name = sc.nextLine();
             System.out.println("Please input password: ");
@@ -778,7 +779,7 @@ public class Main {
             if(type == 1) {
                 System.out.println("group by(1.department 2.employee): ");
                 int groupType = Integer.parseInt(sc.nextLine());
-                if(groupType == 2) groupBy = "leave_info.employee_id";
+                if(groupType == 2) groupBy = "employee_id";
             }
             System.out.println("Please choose the order(0 for asc, 1 for desc): ");
             int orderBy = Integer.parseInt(sc.nextLine());
@@ -796,8 +797,8 @@ public class Main {
                     break;
                 case 2:
                     try {
-                        if(departmentId != -1) ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, groupBy, "count(distinct leave_info.employee_id)", orderBy);
-                        else ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, groupBy, "count(distinct leave_info.employee_id)", orderBy);
+                        if(departmentId != -1) ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, groupBy, "count(distinct employee_id)", orderBy);
+                        else ((Manager)user).queryLeave(employeeId, departmentId, begin, end, status, leaveType, order, groupBy, "count(distinct employee_id)", orderBy);
                     } catch (PermisionDeniedException e) {
                         System.out.println("Sorry, your permission is insufficient!");
                     } catch (Exception e) {
@@ -928,7 +929,7 @@ public class Main {
             if(type == 1) {
                 System.out.println("group by(1.department 2.employee): ");
                 int groupType = Integer.parseInt(sc.nextLine());
-                if(groupType == 2) groupBy = "trip.employee_id";
+                if(groupType == 2) groupBy = "employee_id";
             }
             System.out.println("Please choose the order(0 for asc, 1 for desc): ");
             int orderBy = Integer.parseInt(sc.nextLine());
@@ -946,8 +947,8 @@ public class Main {
                     break;
                 case 2:
                     try {
-                        if(departmentId != -1) ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, groupBy, "count(distinct trip.employee_id)", orderBy);
-                        else ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, groupBy, "count(distinct trip.employee_id)", orderBy);
+                        if(departmentId != -1) ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, groupBy, "count(distinct employee_id)", orderBy);
+                        else ((Manager)user).queryTrip(employeeId, departmentId, begin, end, status, tripType, order, groupBy, "count(distinct employee_id)", orderBy);
                     } catch (PermisionDeniedException e) {
                         System.out.println("Sorry, your permission is insufficient!");
                     } catch (Exception e) {
