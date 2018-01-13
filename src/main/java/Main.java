@@ -589,7 +589,7 @@ public class Main {
                     order = "department_id ";
                     break;
                 case 3:
-                    order = "employee_id ";
+                    order = "attendance.employee_id ";
                     break;
                 case 4:
                     order = "status ";
@@ -736,7 +736,7 @@ public class Main {
                     order = "department_id ";
                     break;
                 case 3:
-                    order = "employee_id ";
+                    order = "leave_info.employee_id ";
                     break;
                 case 4:
                     order = "status ";
@@ -886,7 +886,7 @@ public class Main {
                     order = "department_id ";
                     break;
                 case 3:
-                    order = "employee_id ";
+                    order = "trip.employee_id ";
                     break;
                 case 4:
                     order = "status ";
