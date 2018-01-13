@@ -159,7 +159,7 @@ public class Manager extends User {
     }
     public int addDepartment(String departmentName, int managerID) throws SQLException, NoSuchUserException {
         String sql =  String.format( "SELECT * FROM user WHERE employee_id = %d",managerID);
-        System.out.println(sql);
+        //System.out.println(sql);
         ResultSet resultSet = null;
         try {
             resultSet = DBUtils.executeSql(sql);
@@ -179,7 +179,7 @@ public class Manager extends User {
     }
     public boolean modifyDepartment(int departmentID, String departmentName, int managerID) throws SQLException, NoSuchUserException {
         String sql =  String.format( "SELECT * FROM user WHERE employee_id = %d",managerID);
-        System.out.println(sql);
+        //System.out.println(sql);
         ResultSet resultSet = null;
         try {
             resultSet = DBUtils.executeSql(sql);
@@ -292,7 +292,7 @@ public class Manager extends User {
         String sql = String.format("SELECT * FROM attendance, employee WHERE attendance.employee_id = employee.employee_id" +
                         " %s %s %s %s %s %s ",
                 sqlEmployeeID, sqlDepartmentID, sqlDayBegin, sqlDayEnd, sqlStatus, sqlOrder);
-        System.out.println(sql);
+        //System.out.println(sql);
         ResultSet resultSet = DBUtils.executeSql(sql);
         System.out.println("--------------attendance_info---------------");
         System.out.println("employee_id employee_name  department_id  date  sign_in  sign_off  status");
