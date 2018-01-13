@@ -268,9 +268,9 @@ public class Manager extends User {
             sqlOrder = "ORDER BY "+order;
         if (!groupBy.equals("")) {
             if (oderByCount==0){
-                sqlOrder = "ORDER BY "+groupBy+" asc";
+                sqlOrder = "ORDER BY count asc";
             }else if (oderByCount==1){
-                sqlOrder = "ORDER BY "+groupBy+" desc";
+                sqlOrder = "ORDER BY count desc";
             }
             if (!countArg.equals("*")){
                 countArg = "DISTINCT "+countArg;
@@ -329,9 +329,9 @@ public class Manager extends User {
                 sqlDayBegin = "AND begin >= \'" + dateBegin + "\'";
             }
             if (oderByCount==0){
-                sqlOrder = "ORDER  BY "+groupBy+" asc";
+                sqlOrder = "ORDER  BY count asc";
             }else if (oderByCount==1){
-                sqlOrder = "ORDER BY "+groupBy+" desc";
+                sqlOrder = "ORDER BY count desc";
             }
             String sql = String.format("SELECT %s, %s AS count FROM (SELECT %s, leave_info.employee_id, end-begin AS day" +
                             "FROM leave_info, employee WHERE leave_info.employee_id = employee.employee_id" +
@@ -388,9 +388,9 @@ public class Manager extends User {
                 sqlDayBegin = "AND begin >= \'" + dateBegin + "\'";
             }
             if (oderByCount==0){
-                sqlOrder = "ORDER  BY "+groupBy+" asc";
+                sqlOrder = "ORDER  BY count asc";
             }else if (oderByCount==1){
-                sqlOrder = "ORDER BY "+groupBy+" desc";
+                sqlOrder = "ORDER BY count desc";
             }
             String sql = String.format("SELECT %s, %s AS count FROM (SELECT %s, trip.employee_id, end-begin AS day" +
                             "FROM trip, employee WHERE trip.employee_id = employee.employee_id" +
