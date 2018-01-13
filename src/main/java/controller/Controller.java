@@ -14,7 +14,7 @@ public class Controller {
             if(flag) {
                 System.out.println("true");
                 dumpUser(tmp);
-                tmp.log("login", "first log");
+                tmp.log("login", "log_in log");
             }
             else System.out.println("false");
         } catch (Exception e) {

@@ -96,6 +96,7 @@ public class User {
     }
 
     public void modify(int age, String password, String name) throws Exception {
+        log("modify_user","modify self");
         String sql = String.format("UPDATE user SET age=%d, password=\'%s\', name=\'%s\' WHERE employee_id=%d", age, password, name, employeeId);
         DBUtils.executeUpdate(sql);
     }
