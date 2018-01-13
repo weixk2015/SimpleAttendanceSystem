@@ -121,7 +121,7 @@ public class Manager extends User {
         }
     }
     public int getDepartmentID(String departmentName) throws Exception {
-        String sql = String.format("SELECT department_id FROM department WHERE department_n = \'%s\'",departmentName);
+        String sql = String.format("SELECT department_id FROM department WHERE department_name = \'%s\'",departmentName);
         ResultSet resultSet = DBUtils.executeSql(sql);
 
         if (resultSet.next()) {
