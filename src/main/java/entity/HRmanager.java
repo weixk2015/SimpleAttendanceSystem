@@ -27,7 +27,7 @@ public class HRmanager extends Manager {
         System.out.println("id       name        age      type");
         while(resultSet.next()) {
             int type = resultSet.getInt("type");
-            if (type==1||type==3)
+            if ((type==1||type==3)&&id!=employeeId)
                 throw new PermisionDeniedException();
             dumpUserInfo(resultSet);
         }
@@ -38,7 +38,7 @@ public class HRmanager extends Manager {
         System.out.println("id       name        age      type");
         while(resultSet.next()) {
             int type = resultSet.getInt("type");
-            if (type==1||type==3)
+            if ((type==1||type==3)&&resultSet.getInt("employee_id")!=employeeId)
                 throw new PermisionDeniedException();
             dumpUserInfo(resultSet);
         }
